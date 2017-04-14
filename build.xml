@@ -9,6 +9,7 @@
     <property name="main-class"  value="screens.MainScreen"/>
 
     <target name="build">
+        <mkdir dir="${build.dir}"/>
         <mkdir dir="${classes.dir}"/>
     </target>
 

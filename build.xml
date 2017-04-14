@@ -6,7 +6,7 @@
     <property name="build.dir" location="build"/>
     <property name="classes.dir" location="${build.dir}/classes"/>
     <property name="jar.dir" location="${build.dir}/jar"/>
-    <property name="main-class"  value="activities.MainActivity"/>
+    <property name="main-class"  value="screens.MainScreen"/>
 
     <target name="build">
         <mkdir dir="${classes.dir}"/>

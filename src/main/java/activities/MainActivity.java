@@ -19,7 +19,8 @@ public class MainActivity extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/mainscreen.fxml"));
-        Scene scene = new Scene(root, 700, 700);
+        Scene scene = new Scene(root, 1280 , 720);
+        primaryStage.setResizable(false);
         primaryStage.setTitle("Snappy Welcome");
         primaryStage.setScene(scene);
         primaryStage.show();

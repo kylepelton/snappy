@@ -15,7 +15,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.File;
-import model.PhotoManager;
+import model.Photo;
 
 public class MainScreenController extends Controller {
     private Stage primaryStage;
@@ -39,16 +39,15 @@ public class MainScreenController extends Controller {
     }
 
     private void updatePhotos() {
-        ObservableList<File> photos = PhotoManager.getInstance().getPhotos();
         images.getChildren().clear();
-        for (File file : photos) {
-            ImageView view = new ImageView(new Image(file.toURI().toString(), 230, 210, true, true));
+        for (Photo photo : PhotoManager.getInstance().getPhotos()) {
+            ImageView view = new ImageView(photo.getMainScreenImg());
             view.setPreserveRatio(true);
             view.setFitHeight(210);
             view.setFitWidth(230);
             view.setOnMouseClicked((e) -> {
-                PhotoManager.getInstance().setCurrentPhoto(file);
-                openScreen("viewphotoscreen", file.getName());
+                PhotoManager.getInstance().setCurrentPhoto(photo);
+                openScreen("viewphotoscreen", photo.getFile().getName());
             });
             images.getChildren().add(view);
         }

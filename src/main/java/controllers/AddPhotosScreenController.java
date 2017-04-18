@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -15,6 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.layout.TilePane;
 import javafx.event.EventHandler;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.HBox;
 import javafx.scene.input.DragEvent;
@@ -51,6 +53,7 @@ public class AddPhotosScreenController extends Controller {
     @FXML private Button addPhotosButton;
     @FXML private Pane loading;
     @FXML private ProgressBar progress;
+    @FXML private TextField tagBox;
 
     @FXML
     private void initialize() {
@@ -181,13 +184,7 @@ public class AddPhotosScreenController extends Controller {
                         x.setPreserveRatio(true);
                         x.setFitHeight(30);
                         x.setOpacity(0.0);
-                        view.setOnMouseEntered((e) -> {
-                            fadeIn(x, 100);
-                        });
-                        view.setOnMouseExited((e) -> {
-                            x.setOpacity(0.0);
-                        });
-                        view.setOnMouseClicked((e) -> {
+                        x.setOnMouseClicked((e) -> {
                             toAdd.remove(file);
                             fileList = new ArrayList<>();
                             images.getChildren().remove(p);
@@ -197,6 +194,13 @@ public class AddPhotosScreenController extends Controller {
                                 confirm.setText(toAdd.size() + " photos ready to add!");
                             }
                         });
+                        view.setOnMouseEntered((e) -> {
+                            fadeIn(x, 100);
+                        });
+                        view.setOnMouseExited((e) -> {
+                            x.setOpacity(0.0);
+                        });
+                        view.setOnMouseClicked(x.getOnMouseClicked());
                         p.getChildren().add(view);
                         p.getChildren().add(x);
                         images.getChildren().add(p);
@@ -231,7 +235,14 @@ public class AddPhotosScreenController extends Controller {
     @FXML protected void onAddPhotosPress(ActionEvent event) {
         //TODO
         try {
-            PhotoManager.getInstance().addPhotos(toAdd);
+            List<String> tags = new ArrayList<>(Arrays.asList(tagBox.getText().split(",")));
+            for (int i = 0; i < tags.size(); i++) {
+                tags.set(i, tags.get(i).trim());
+            }
+            while (tags.contains("")) {
+                tags.remove("");
+            }
+            PhotoManager.getInstance().addPhotos(toAdd, tags);
             stage.close();
         } catch (Exception e) {
             e.printStackTrace();

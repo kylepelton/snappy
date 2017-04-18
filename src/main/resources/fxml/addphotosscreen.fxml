@@ -113,7 +113,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
             </Text>
-            <TextField promptText="Separate tags with commas (,)...">
+            <TextField fx:id="tagBox" promptText="Separate tags with commas (,)...">
                <VBox.margin>
                   <Insets left="40.0" right="40.0" top="10.0" />
                </VBox.margin>

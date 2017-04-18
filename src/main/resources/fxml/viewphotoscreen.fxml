@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -42,7 +42,7 @@
                   </Text>
                   <ScrollPane hbarPolicy="NEVER" layoutX="23.0" layoutY="39.0" prefHeight="120.0" prefWidth="600.0">
                      <content>
-                        <TilePane alignment="CENTER" prefTileWidth="150.0" prefWidth="600.0" />
+                        <FlowPane fx:id="tags" alignment="CENTER" prefWrapLength="600.0" prefWidth="600.0" vgap="15.0" hgap="10.0"/>
                      </content>
                   </ScrollPane>
                </children>
@@ -52,38 +52,63 @@
                   <Insets left="20.0" top="20.0" />
                </VBox.margin>
             </Separator>
-            <HBox alignment="CENTER_RIGHT" prefHeight="83.0" prefWidth="640.0">
+            <HBox fx:id="buttonBox" alignment="CENTER_RIGHT" prefHeight="83.0" prefWidth="640.0">
                <children>
-                  <Button defaultButton="true" layoutX="388.0" layoutY="25.0" mnemonicParsing="false" text="Edit Tags">
+                  <Button fx:id="confirmChangesButton" layoutX="188.0" layoutY="25.0" mnemonicParsing="false" onAction="#onConfirmChangesPress" text="Confirm">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="15.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="20.0" />
+                        <Insets left="15.0" />
                      </HBox.margin>
                   </Button>
-                  <Button layoutX="456.0" layoutY="25.0" mnemonicParsing="false" onAction="#onViewInFolderPress" text="View in Folder">
+                  <Button fx:id="addTagButton" layoutX="288.0" layoutY="25.0" mnemonicParsing="false" onAction="#onAddTagPress" text="Add Tag">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="15.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="20.0" />
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="undoButton" layoutX="388.0" layoutY="25.0" mnemonicParsing="false" onAction="#onUndoPress" text="Undo">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="editTagsButton" defaultButton="true" layoutX="388.0" layoutY="25.0" mnemonicParsing="false" onAction="#onEditTagsPress" text="Edit Tags">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Button>
+                  
+                  <Button layoutX="456.0" layoutY="25.0" mnemonicParsing="false" onAction="#onViewInFolderPress" text="View in Folder">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="15.0" />
                      </HBox.margin>
                   </Button>
                   <Button fx:id="addPhotosButton" mnemonicParsing="false" text="Export">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="15.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="20.0" />
+                        <Insets left="15.0" />
                      </HBox.margin>
                   </Button>
                   <Button cancelButton="true" layoutX="264.0" layoutY="38.0" mnemonicParsing="false" onAction="#onBackPress" text="Back">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="15.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="20.0" right="20.0" />
+                        <Insets left="15.0" right="15.0" />
                      </HBox.margin>
                   </Button>
                </children>

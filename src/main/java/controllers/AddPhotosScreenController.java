@@ -123,6 +123,9 @@ public class AddPhotosScreenController extends Controller {
     }
 
     private void showToAdd() {
+        if (fileList.size() == 0) {
+            return;
+        }
         fadeIn(loading);
         loading.setDisable(false);
         loading.setVisible(true);
@@ -187,7 +190,12 @@ public class AddPhotosScreenController extends Controller {
                         view.setOnMouseClicked((e) -> {
                             toAdd.remove(file);
                             fileList = new ArrayList<>();
-                            showToAdd();
+                            images.getChildren().remove(p);
+                            if (toAdd.size() == 1) {
+                                confirm.setText(toAdd.size() + " photo ready to add!");
+                            } else {
+                                confirm.setText(toAdd.size() + " photos ready to add!");
+                            }
                         });
                         p.getChildren().add(view);
                         p.getChildren().add(x);

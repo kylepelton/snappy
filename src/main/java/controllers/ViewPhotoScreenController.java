@@ -11,6 +11,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import model.PhotoManager;
@@ -31,7 +32,7 @@ public class ViewPhotoScreenController extends Controller {
     @FXML private Button confirmChangesButton;
     @FXML private HBox buttonBox;
     private boolean editingTags;
-    
+
     private void flipButtons() {
         if (editingTags) {
             editingTags = false;
@@ -39,25 +40,15 @@ public class ViewPhotoScreenController extends Controller {
             buttonBox.getChildren().remove(0);
             buttonBox.getChildren().remove(0);
             buttonBox.getChildren().add(0, editTagsButton);
-            /*
-            addTagButton.setVisible(false);
-            undoButton.setVisible(false);
-            confirmChangesButton.setVisible(false);
-            editTagsButton.setVisible(true);*/
         } else {
             editingTags = true;
             buttonBox.getChildren().remove(0);
             buttonBox.getChildren().add(0, undoButton);
             buttonBox.getChildren().add(0, addTagButton);
             buttonBox.getChildren().add(0, confirmChangesButton);
-            /*
-            addTagButton.setVisible(true);
-            undoButton.setVisible(true);
-            confirmChangesButton.setVisible(true);
-            editTagsButton.setVisible(false);*/
         }
     }
-    
+
     @FXML
     private void initialize() {
         preview.setImage(PhotoManager.getInstance().getCurrentPhoto().getPreviewImg());
@@ -88,22 +79,22 @@ public class ViewPhotoScreenController extends Controller {
         flipButtons();
         updateTagView();
     }
-    
+
     @FXML protected void onAddTagPress(ActionEvent event) {
         addTagToView("        ");
     }
-    
+
     @FXML protected void onUndoPress(ActionEvent event) {
         flipButtons();
         updateTagView();
     }
-    
+
     @FXML protected void onConfirmChangesPress(ActionEvent event) {
         updateTagModel();
         flipButtons();
         updateTagView();
     }
-    
+
     private void updateTagModel() {
         List<String> newTags = new ArrayList<>();
         for (Node n : tags.getChildren()) {
@@ -131,7 +122,7 @@ public class ViewPhotoScreenController extends Controller {
             addTagToView(tag);
         }
     }
-    
+
     private void addTagToView(String tag) {
         HBox tagView = new HBox();
         tagView.setStyle("-fx-background-color: #E0FFFF; "
@@ -145,8 +136,17 @@ public class ViewPhotoScreenController extends Controller {
                 tags.getChildren().remove(tagView);
             });
             tagView.setOnMouseClicked((e) -> {
-                tagView.getChildren().remove(0);
-                tagView.getChildren().add(0, new TextField(tag.trim()));
+                if (tagView.getChildren().get(0) instanceof Text) {
+                    TextField tf = new TextField(((Text)tagView.getChildren().get(0)).getText().trim());
+                    tagView.getChildren().remove(0);
+                    tf.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                        if (newValue == false) {
+                            tagView.getChildren().remove(0);
+                            tagView.getChildren().add(0, new Text(tf.getText()));
+                        }
+                    });
+                    tagView.getChildren().add(0, tf);
+                }
             });
             children.add(x);
         }

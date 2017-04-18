@@ -15,11 +15,28 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.File;
+import model.PhotoManager;
 
-public class MainScreenController {
+public class MainScreenController extends Controller {
     private Stage primaryStage;
     private Stage secondaryStage;
     @FXML private TilePane images;
+
+    private void openScreen(String screen, String header) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/" + screen + ".fxml"));
+                    secondaryStage.setScene(new Scene(loader.load()));
+            secondaryStage.setTitle(header);
+            secondaryStage.show();
+
+            Controller controller = loader.getController();
+            controller.setStage(secondaryStage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void updatePhotos() {
         ObservableList<File> photos = PhotoManager.getInstance().getPhotos();
@@ -29,6 +46,10 @@ public class MainScreenController {
             view.setPreserveRatio(true);
             view.setFitHeight(210);
             view.setFitWidth(230);
+            view.setOnMouseClicked((e) -> {
+                PhotoManager.getInstance().setCurrentPhoto(file);
+                openScreen("viewphotoscreen", file.getName());
+            });
             images.getChildren().add(view);
         }
     }
@@ -54,19 +75,7 @@ public class MainScreenController {
     }
 
     @FXML protected void openAddPhotosScreen(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/fxml/addphotosscreen.fxml"));
-            secondaryStage.setScene(new Scene(loader.load()));
-            secondaryStage.setTitle("Add Photos");
-            secondaryStage.show();
-
-            AddPhotosScreenController controller = loader.getController();
-            controller.setStage(secondaryStage);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        openScreen("addphotosscreen", "Add Photos");
     }
 
     @FXML protected void openApplicationSettingsScreen(ActionEvent event) {

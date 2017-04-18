@@ -35,8 +35,7 @@ import javafx.scene.control.ProgressBar;
 
 import model.PhotoManager;
 
-public class AddPhotosScreenController {
-    private Stage stage;
+public class AddPhotosScreenController extends Controller {
     private Desktop desktop = Desktop.getDesktop();
     private FileChooser fileChooser;
     private List<File> fileList;
@@ -214,10 +213,6 @@ public class AddPhotosScreenController {
         progress.progressProperty().bind(task.progressProperty());
         new Thread(task).start();
         boolean error = false;
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
     }
 
     @FXML protected void onBrowsePress(ActionEvent event) {

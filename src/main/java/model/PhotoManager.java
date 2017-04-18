@@ -10,6 +10,7 @@ public class PhotoManager {
 
     private ArrayList<File> photos;
     private ObservableList<File> _photos;
+    private File currentPhoto;
     private static PhotoManager instance = null;
 
     protected PhotoManager() {
@@ -25,7 +26,19 @@ public class PhotoManager {
     }
 
     public void addPhotos(List<File> photos) {
-        this._photos.addAll(photos);
+        for (File file : photos) {
+            if (!this._photos.contains(file)) {
+                this._photos.add(file);
+            }
+        }
+    }
+
+    public void setCurrentPhoto(File photo) {
+        this.currentPhoto = photo;
+    }
+
+    public File getCurrentPhoto() {
+        return currentPhoto;
     }
 
     public ObservableList<File> getPhotos() {

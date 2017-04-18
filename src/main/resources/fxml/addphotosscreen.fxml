@@ -2,8 +2,13 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
@@ -14,41 +19,91 @@
    <children>
       <VBox prefHeight="720.0" prefWidth="640.0">
          <children>
-            <Pane prefHeight="200.0" prefWidth="640.0" style="-fx-border-color: lightgray; -fx-border-style: dashed; -fx-border-width: 3;">
-               <VBox.margin>
-                  <Insets left="40.0" right="40.0" top="20.0" />
-               </VBox.margin>
+            <AnchorPane prefHeight="228.0" prefWidth="640.0">
                <children>
-                  <Text fx:id="dragarea" fill="#0000003c" layoutX="128.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Drag images here" textAlignment="CENTER">
-                     <font>
-                        <Font size="39.0" />
-                     </font>
-                  </Text>
+                  <ScrollPane fx:id="display" pannable="true" prefHeight="200.0" prefWidth="600.0" vbarPolicy="NEVER" visible="false" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                     <content>
+                        <HBox fx:id="images" alignment="CENTER" maxHeight="0.0" opacity="0.0" prefHeight="190.0" spacing="10.0" />
+                     </content>
+                  </ScrollPane>
+                  <Pane fx:id="dragarea" prefHeight="200.0" prefWidth="640.0" style="-fx-border-color: lightgray; -fx-border-style: dashed; -fx-border-width: 3;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                     <children>
+                        <Text fx:id="dragtext" boundsType="LOGICAL_VERTICAL_CENTER" disable="true" fill="#0000003c" layoutX="148.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Drag images here" textAlignment="CENTER">
+                           <font>
+                              <Font size="39.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Pane>
+                  <Pane fx:id="loading" opacity="0.0" prefHeight="228.0" prefWidth="640.0">
+                     <children>
+                        <ProgressBar fx:id="progress" layoutX="133.0" layoutY="96.0" prefHeight="27.0" prefWidth="375.0" progress="0.0" />
+                        <Text layoutX="235.0" layoutY="154.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Creating previews...">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+            <Pane prefHeight="71.0" prefWidth="640.0">
+               <children>
+                  <HBox fx:id="browse" prefHeight="61.0" prefWidth="640.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="or">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="250.0" top="12.0" />
+                           </HBox.margin>
+                        </Text>
+                        <Button fx:id="browseButton" mnemonicParsing="false" onAction="#onBrowsePress" text="Browse...">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="10.0" top="6.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="cancelButton" layoutX="289.0" layoutY="50.0" mnemonicParsing="false" onAction="#onAddCancelPress" text="Cancel" visible="false">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="150.0" top="6.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="addmore" alignment="CENTER" disable="true" opacity="0.0" prefHeight="61.0" prefWidth="640.0">
+                     <children>
+                        <ImageView fx:id="check" fitHeight="30.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                           <image>
+                              <Image url="@../icons/accept.png" />
+                           </image>
+                        </ImageView>
+                        <Text fx:id="confirm" strokeType="OUTSIDE" strokeWidth="0.0" text="n photos ready to add.">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Text>
+                        <Button fx:id="addMoreButton" mnemonicParsing="false" onAction="#onAddMorePhotosPress" text="Select More Photos">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
             </Pane>
-            <HBox prefHeight="61.0" prefWidth="640.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="or">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="250.0" top="12.0" />
-                     </HBox.margin>
-                  </Text>
-                  <Button mnemonicParsing="false" onAction="#onBrowsePress" text="Browse...">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="10.0" top="6.0" />
-                     </HBox.margin>
-                  </Button>
-               </children>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </HBox>
             <Separator prefWidth="200.0" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tag All Photos (Optional)" textAlignment="CENTER" wrappingWidth="640.0">
                <font>
@@ -68,9 +123,9 @@
                   <Insets left="20.0" top="20.0" />
                </VBox.margin>
             </Separator>
-            <HBox alignment="CENTER" prefHeight="83.0" prefWidth="640.0">
+            <HBox alignment="CENTER_RIGHT" prefHeight="83.0" prefWidth="640.0">
                <children>
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#onAddPhotosPress" text="Add Photos">
+                  <Button fx:id="addPhotosButton" defaultButton="true" disable="true" mnemonicParsing="false" onAction="#onAddPhotosPress" text="Add Photos">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -80,7 +135,7 @@
                         <Font size="20.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="40.0" />
+                        <Insets left="20.0" right="20.0" />
                      </HBox.margin>
                   </Button>
                </children>

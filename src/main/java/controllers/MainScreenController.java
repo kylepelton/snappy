@@ -1,6 +1,7 @@
 package controllers;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,10 +9,36 @@ import javafx.scene.Parent;
 import javafx.scene.text.Text;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.PhotoManager;
+import javafx.collections.ListChangeListener;
+import javafx.scene.layout.TilePane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import java.io.File;
 
 public class MainScreenController {
     private Stage primaryStage;
     private Stage secondaryStage;
+    @FXML private TilePane images;
+
+    private void updatePhotos() {
+        ObservableList<File> photos = PhotoManager.getInstance().getPhotos();
+        images.getChildren().clear();
+        for (File file : photos) {
+            ImageView view = new ImageView(new Image(file.toURI().toString(), 230, 210, true, true));
+            view.setPreserveRatio(true);
+            view.setFitHeight(210);
+            view.setFitWidth(230);
+            images.getChildren().add(view);
+        }
+    }
+
+    @FXML
+    private void initialize() {
+        PhotoManager.getInstance().getPhotos().addListener((ListChangeListener) (change) -> {
+            updatePhotos();
+        });
+    }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;

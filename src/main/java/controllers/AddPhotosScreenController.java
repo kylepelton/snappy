@@ -123,7 +123,7 @@ public class AddPhotosScreenController extends Controller {
     }
 
     private void showToAdd() {
-        if (fileList.size() == 0) {
+        if (fileList == null || fileList.size() == 0) {
             return;
         }
         fadeIn(loading);

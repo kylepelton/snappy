@@ -26,7 +26,7 @@ public class MainScreenController extends Controller {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/" + screen + ".fxml"));
-                    secondaryStage.setScene(new Scene(loader.load()));
+            secondaryStage.setScene(new Scene(loader.load()));
             secondaryStage.setTitle(header);
             secondaryStage.show();
 

@@ -15,11 +15,13 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.File;
+import java.util.Properties;
 import model.Photo;
 
 public class MainScreenController extends Controller {
     private Stage primaryStage;
     private Stage secondaryStage;
+    private Properties prop;
     @FXML private TilePane images;
 
     private void openScreen(String screen, String header) {
@@ -67,6 +69,10 @@ public class MainScreenController extends Controller {
 
     public void setSecondaryStage(Stage secondaryStage) {
         this.secondaryStage = secondaryStage;
+    }
+
+    public void setProperties(Properties prop) {
+        this.prop = prop;
     }
 
     @FXML protected void openTaggingScreen(ActionEvent event) {

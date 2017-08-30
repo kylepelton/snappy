@@ -8,14 +8,12 @@ import java.io.File;
 
 public class PhotoManager {
 
-    private ArrayList<Photo> photos;
-    private ObservableList<Photo> _photos;
+    private ObservableList<Photo> photos;
     private Photo currentPhoto;
     private static PhotoManager instance = null;
 
     protected PhotoManager() {
-        photos = new ArrayList<Photo>();
-        _photos = FXCollections.observableList(photos);
+        this.photos = FXCollections.observableList(new ArrayList<Photo>());
     }
 
     public static PhotoManager getInstance() {
@@ -25,10 +23,10 @@ public class PhotoManager {
         return instance;
     }
 
-    public void addPhotos(List<File> photos, List<String> tags) {
-        for (File file : photos) {
-            if (!this._photos.contains(file)) {
-                this._photos.add(new Photo(file, tags));
+    public void addPhotos(List<File> photosToAdd, List<String> tags) {
+        for (File file : photosToAdd) {
+            if (!this.photos.contains(file)) {
+                this.photos.add(new Photo(file, tags));
             }
         }
     }
@@ -38,10 +36,10 @@ public class PhotoManager {
     }
 
     public Photo getCurrentPhoto() {
-        return currentPhoto;
+        return this.currentPhoto;
     }
 
     public ObservableList<Photo> getPhotos() {
-        return _photos;
+        return this.photos;
     }
 }

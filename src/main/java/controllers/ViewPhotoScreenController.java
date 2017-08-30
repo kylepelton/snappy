@@ -59,10 +59,6 @@ public class ViewPhotoScreenController extends Controller {
         buttonBox.getChildren().remove(0);
     }
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
-
     @FXML protected void onBackPress(ActionEvent event) {
         stage.close();
     }

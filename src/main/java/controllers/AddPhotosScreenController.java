@@ -242,7 +242,7 @@ public class AddPhotosScreenController extends Controller {
             while (tags.contains("")) {
                 tags.remove("");
             }
-            PhotoManager.getInstance().addPhotos(toAdd, tags);
+            PhotoManager.getInstance().savePhotos(toAdd, tags);
             stage.close();
         } catch (Exception e) {
             e.printStackTrace();

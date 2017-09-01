@@ -73,6 +73,7 @@ public class MainScreenController extends Controller {
 
     public void setProperties(Properties prop) {
         this.prop = prop;
+        PhotoManager.getInstance().setProperties(this.prop);
     }
 
     @FXML protected void openTaggingScreen(ActionEvent event) {

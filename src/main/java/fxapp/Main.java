@@ -4,6 +4,8 @@ import java.util.Properties;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import controllers.MainScreenController;
+import controllers.InitConfigScreenController;
 
 public class Main extends Application {
 
@@ -22,6 +25,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Properties prop = new Properties();
         InputStream configInput = null;
+        FXMLLoader loader = null;
+        Stage secondaryStage = null;
+        boolean validSetup = false;
 
         try {
             String delim = System.getProperty("file.separator");
@@ -33,20 +39,46 @@ public class Main extends Application {
             }
             configInput = new FileInputStream(configFile);
             prop.load(configInput);
+            configInput.close();
 
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/fxml/mainscreen.fxml"));
+            if (prop.getProperty("photosdir") == null) {
+                secondaryStage = new Stage();
+                loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/fxml/initialsetupscreen.fxml"));
 
-            primaryStage.setTitle("Snappy");
-            primaryStage.setScene(new Scene(loader.load()));
-            primaryStage.show();
+                secondaryStage.setTitle("Welcome to Snappy!");
+                secondaryStage.setScene(new Scene(loader.load()));
+                InitConfigScreenController initController = loader.getController();
+                initController.setStage(secondaryStage);
+                secondaryStage.showAndWait();
 
-            MainScreenController controller = loader.getController();
-            Stage secondaryStage = new Stage();
-            controller.setPrimaryStage(primaryStage);
-            controller.setSecondaryStage(secondaryStage);
-            controller.setProperties(prop);
+                if (initController.getDirectory() != null) {
+                    validSetup = true;
+                    File newDir = new File(initController.getDirectory() + delim + "snappy_photos");
+                    newDir.mkdir();
+                    prop.setProperty("photosdir", initController.getDirectory() + delim + "snappy_photos");
+                    OutputStream configOutput = new FileOutputStream(configFile);
+                    prop.store(configOutput, null);
+                    configOutput.close();
+                }
+            } else {
+                validSetup = true;
+            }
 
+            if (validSetup) {
+                loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource("/fxml/mainscreen.fxml"));
+
+                primaryStage.setTitle("Snappy");
+                primaryStage.setScene(new Scene(loader.load()));
+                primaryStage.show();
+
+                MainScreenController controller = loader.getController();
+                secondaryStage = new Stage();
+                controller.setPrimaryStage(primaryStage);
+                controller.setSecondaryStage(secondaryStage);
+                controller.setProperties(prop);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

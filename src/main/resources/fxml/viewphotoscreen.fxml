@@ -18,7 +18,7 @@
    <children>
       <VBox prefHeight="720.0" prefWidth="640.0">
          <children>
-            <AnchorPane prefHeight="472.0" prefWidth="640.0" style="-fx-border-color: ;">
+            <AnchorPane prefHeight="472.0" prefWidth="640.0" style="-fx-border-color: lightgrey;">
                <children>
                   <BorderPane prefHeight="450.0" prefWidth="640.0" style="-fx-border-color: lightgrey; -fx-border-width: 4;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <center>
@@ -86,7 +86,7 @@
                         <Insets left="15.0" />
                      </HBox.margin>
                   </Button>
-                  
+
                   <Button layoutX="456.0" layoutY="25.0" mnemonicParsing="false" onAction="#onViewInFolderPress" text="View in Folder">
                      <font>
                         <Font size="15.0" />

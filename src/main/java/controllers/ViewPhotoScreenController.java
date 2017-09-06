@@ -65,7 +65,7 @@ public class ViewPhotoScreenController extends Controller {
 
     @FXML protected void onViewInFolderPress(ActionEvent event) {
         try {
-            Desktop.getDesktop().open(PhotoManager.getInstance().getCurrentPhoto().getFile().getParentFile());
+            Desktop.getDesktop().open(PhotoManager.getInstance().getCurrentPhoto().getDirectory());
         } catch (IOException io) {
             System.out.println("File Not Found");
         };

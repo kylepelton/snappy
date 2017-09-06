@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.nio.file.Files;
+import fxapp.LoadPhotosTask;
+import javafx.application.Platform;
 
 public class PhotoManager {
 
@@ -91,26 +93,33 @@ public class PhotoManager {
         }
     }
 
-    private void loadPhotos(File[] photosToLoad) {
-        loadPhotos(Arrays.asList(photosToLoad));
+    private void loadPhotos(File[] photosToLoad, LoadPhotosTask task) {
+        loadPhotos(Arrays.asList(photosToLoad), task);
     }
 
-    private void loadPhotos(List<File> photosToLoad) {
+    private void loadPhotos(List<File> photosToLoad, LoadPhotosTask task) {
+        int curr = 1;
         for (File dir : photosToLoad) {
             if (dir.isDirectory()) {
                 try {
-                    loadPhoto(new Photo(dir));
+                    Platform.runLater(() -> loadPhoto(new Photo(dir)));
                 } catch (Exception e) {
                     System.err.println("Error: File " + dir + " is corrupted.");
                 }
             }
+            task.updateProgress(curr, photosToLoad.size());
+            curr++;
         }
     }
 
     public void setProperties(Properties prop) {
         this.prop = prop;
+    }
+
+    // Given a task to update progress, loads the persisted photos.
+    public void loadPhotosSynchronous(LoadPhotosTask task) {
         photosdir = new File(prop.getProperty("photosdir"));
-        loadPhotos(photosdir.listFiles());
+        loadPhotos(photosdir.listFiles(), task);
     }
 
     public void setCurrentPhoto(Photo photo) {

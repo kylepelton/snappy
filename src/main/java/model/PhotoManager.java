@@ -35,9 +35,12 @@ public class PhotoManager {
 
     public void savePhotos(List<File> photosToSave, List<String> tags) {
         for (File file : photosToSave) {
-            File newPhotoFile = new File(photosdir.toString() + File.separator + System.currentTimeMillis() + "_" + counter);
-            newPhotoFile.mkdir();
-            File imageFile = new File(newPhotoFile.toString() + File.separator + file.getName());
+            long timeAdded = System.currentTimeMillis();
+            File newPhotoDir = new File(photosdir.toString() + File.separator
+                    + timeAdded + "_" + counter);
+            newPhotoDir.mkdir();
+            File imageFile = new File(newPhotoDir.toString() + File.separator
+                    + file.getName());
             try {
                 imageFile.createNewFile();
                 OutputStream stream = new FileOutputStream(imageFile);
@@ -46,20 +49,39 @@ public class PhotoManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            File tagFile = new File(newPhotoFile.toString() + File.separator + "tags.txt");
-            try {
-                tagFile.createNewFile();
-                BufferedWriter bw = new BufferedWriter(new FileWriter(tagFile));
-                for (String tag : tags) {
-                    bw.write(tag);
-                    bw.newLine();
-                }
-                bw.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            PhotoManager.createMetadataFile(
+                    newPhotoDir.toString() + File.separator + ".metadata",
+                    imageFile.getAbsolutePath(), file.getName(), timeAdded,
+                    tags);
             counter += 1;
-            loadPhoto(new Photo(newPhotoFile));
+            try {
+                loadPhoto(new Photo(newPhotoDir));
+            } catch (Exception e) {
+                System.err.println("Error: File " + newPhotoDir + " is corrupted.");
+            }
+        }
+    }
+    
+    public static void createMetadataFile(String fileName, String imagePath,
+            String imageName, long timeAdded, List<String> tags) {
+        File tagFile = new File(fileName);
+        try {
+            tagFile.createNewFile();
+            BufferedWriter bw = new BufferedWriter(new FileWriter(tagFile));
+            // data order: image path, image name, time added, tags
+            bw.write(imagePath);
+            bw.newLine();
+            bw.write(imageName);
+            bw.newLine();
+            bw.write(Long.toString(timeAdded));
+            bw.newLine();
+            for (String tag : tags) {
+                bw.write(tag);
+                bw.newLine();
+            }
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -74,8 +96,14 @@ public class PhotoManager {
     }
 
     private void loadPhotos(List<File> photosToLoad) {
-        for (File file : photosToLoad) {
-            loadPhoto(new Photo(file));
+        for (File dir : photosToLoad) {
+            if (dir.isDirectory()) {
+                try {
+                    loadPhoto(new Photo(dir));
+                } catch (Exception e) {
+                    System.err.println("Error: File " + dir + " is corrupted.");
+                }
+            }
         }
     }
 

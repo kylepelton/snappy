@@ -49,7 +49,7 @@ public class MainScreenController extends Controller {
             view.setFitWidth(230);
             view.setOnMouseClicked((e) -> {
                 PhotoManager.getInstance().setCurrentPhoto(photo);
-                openScreen("viewphotoscreen", photo.getFile().getName());
+                openScreen("viewphotoscreen", photo.getName());
             });
             images.getChildren().add(view);
         }

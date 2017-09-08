@@ -25,8 +25,6 @@ public class InitConfigScreenController extends Controller {
         if (photosdir != null) {
             directory = photosdir.toString();
             directoryField.setText(directory);
-            sizeField.setText("There are about " + Long.toString(photosdir.getFreeSpace() / 1073741824)
-                + " gigabytes available for Snappy to use.");
             confirmButton.setDisable(false);
         }
     }

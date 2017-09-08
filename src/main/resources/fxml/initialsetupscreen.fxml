@@ -12,14 +12,14 @@
             <Font size="33.0" />
          </font>
       </Label>
-      <Label fx:id="directoryField" layoutX="83.0" layoutY="240.0" prefHeight="25.0" prefWidth="446.0" text="No directory selected" textAlignment="RIGHT">
+      <Label fx:id="directoryField" layoutX="83.0" layoutY="240.0" prefHeight="25.0" prefWidth="446.0" textAlignment="RIGHT">
          <graphic>
             <Button fx:id="selectDirButton" mnemonicParsing="false" onAction="#onSelectDirButtonPress" text="Select" />
          </graphic>
       </Label>
       <Label layoutX="77.0" layoutY="99.0" prefHeight="118.0" prefWidth="446.0" text="Hi there!&#10;&#10;Since you're seeing this message, this is probably your first time using Snappy. Before you start, please select a directory where Snappy can store your photos and tags:" wrapText="true" />
       <Label fx:id="sizeField" layoutX="83.0" layoutY="272.0" prefHeight="25.0" prefWidth="446.0" />
-      <Button fx:id="confirmButton" disable="true" layoutX="444.0" layoutY="323.0" mnemonicParsing="false" onAction="#onConfirmButtonPress" text="Confirm" />
+      <Button fx:id="confirmButton" layoutX="444.0" layoutY="323.0" mnemonicParsing="false" onAction="#onConfirmButtonPress" text="Confirm" />
       <Button cancelButton="true" layoutX="382.0" layoutY="323.0" mnemonicParsing="false" onAction="#onCancelButtonPress" text="Cancel" />
    </children>
 </Pane>

@@ -90,7 +90,7 @@
             <Separator orientation="VERTICAL" prefHeight="200.0" />
             <VBox prefHeight="720.0" prefWidth="328.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="0 untagged photos" textAlignment="CENTER" wrappingWidth="328.0">
+                  <Text fx:id="untaggedPhotosText" strokeType="OUTSIDE" strokeWidth="0.0" text="" textAlignment="CENTER" wrappingWidth="328.0">
                      <font>
                         <Font size="20.0" />
                      </font>

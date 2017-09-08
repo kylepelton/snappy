@@ -1,28 +1,31 @@
 package controllers;
 
+import java.io.File;
+import java.util.Properties;
+
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.text.Text;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import model.PhotoManager;
-import javafx.collections.ListChangeListener;
-import javafx.scene.layout.TilePane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.io.File;
-import java.util.Properties;
+import javafx.scene.layout.TilePane;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import model.Photo;
+import model.PhotoManager;
 
 public class MainScreenController extends Controller {
     private Stage primaryStage;
     private Stage secondaryStage;
     private Properties prop;
     @FXML private TilePane images;
+    @FXML private Text untaggedPhotosText;
 
     private void openScreen(String screen, String header) {
         try {
@@ -30,6 +33,10 @@ public class MainScreenController extends Controller {
             loader.setLocation(getClass().getResource("/fxml/" + screen + ".fxml"));
             secondaryStage.setScene(new Scene(loader.load()));
             secondaryStage.setTitle(header);
+            // Update number of untagged photos text every time a popup screen closes
+            secondaryStage.setOnHidden((e) -> {
+                setUntaggedPhotosText();
+            });
             secondaryStage.show();
 
             Controller controller = loader.getController();
@@ -53,6 +60,8 @@ public class MainScreenController extends Controller {
             });
             images.getChildren().add(view);
         }
+        // Setup number of untagged photos upon loading up application
+        setUntaggedPhotosText();
     }
 
     @FXML
@@ -95,6 +104,17 @@ public class MainScreenController extends Controller {
 
     @FXML protected void openHelpScreen(ActionEvent event) {
         //TODO
+    }
+
+    // Update the "__ untagged photos" field in top right of main screen
+    private void setUntaggedPhotosText() {
+        int numUntagged = 0;
+        for (Photo p : PhotoManager.getInstance().getPhotos()) {
+            if (p.getTags() == null || p.getTags().isEmpty() || p.getTags().equals("")) {
+                numUntagged++;
+            }
+        }
+        untaggedPhotosText.setText("" + numUntagged + " photos untagged");
     }
 
 }

@@ -3,7 +3,9 @@ package controllers;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -63,12 +65,27 @@ public class ViewPhotoScreenController extends Controller {
         stage.close();
     }
 
-    @FXML protected void onViewInFolderPress(ActionEvent event) {
-        try {
-            Desktop.getDesktop().open(PhotoManager.getInstance().getCurrentPhoto().getDirectory());
-        } catch (IOException io) {
-            System.out.println("File Not Found");
-        };
+    @FXML public void onDeletePhotoPress(ActionEvent event) {
+        String currentPhotoName = PhotoManager.getInstance().getCurrentPhoto().getName();
+
+        // Trigger confirmation message that you want to delete this photo
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+            "Are you sure you want to permanently delete " + currentPhotoName + "?", ButtonType.YES, ButtonType.NO);
+        alert.initOwner(stage);
+        alert.setHeaderText("Permanently delete this photo?");
+        alert.showAndWait();
+
+        // If confirmed, then delete the photo and launch confirmation popup window
+        if (alert.getResult() == ButtonType.YES) {
+            PhotoManager.getInstance().deletePhoto();
+            alert = new Alert(Alert.AlertType.NONE, "Photo Deleted", ButtonType.OK);
+            alert.initOwner(stage);
+            alert.setHeaderText("Successfully Deleted");
+            alert.setContentText(PhotoManager.getInstance().getCurrentPhoto().getName()
+                + " has been successfully deleted");
+            alert.showAndWait();
+            stage.close();
+        }
     }
 
     @FXML protected void onEditTagsPress(ActionEvent event) {

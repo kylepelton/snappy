@@ -83,7 +83,9 @@ public class MainScreenController extends Controller {
     public void setProperties(Properties prop) {
         this.prop = prop;
         PhotoManager.getInstance().setProperties(prop);
-        openScreen("loadingscreen", "Loading Photos");
+        if (PhotoManager.getInstance().hasPhotos()) {
+            openScreen("loadingscreen", "Loading Photos");
+        }
     }
 
     @FXML protected void openTaggingScreen(ActionEvent event) {

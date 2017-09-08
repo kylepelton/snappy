@@ -43,9 +43,10 @@ public class InitConfigScreenController extends Controller {
     @FXML protected void onConfirmButtonPress(ActionEvent event) {
         if (new File(directory + System.getProperty("file.separator") + "snappy_photos").exists()) {
             Alert alert = new Alert(Alert.AlertType.WARNING,
-                "The snappy_photos folder already exists. Click \"Finish\" to use the existing folder and all of its contents. Click \"Previous\" to select a different folder location.",
-                javafx.scene.control.ButtonType.PREVIOUS,
+                "The snappy_photos folder already exists. Click \"Finish\" to use the existing folder and all of its contents. Click \"Cancel\" to select a different folder location.",
+                javafx.scene.control.ButtonType.CANCEL,
                 javafx.scene.control.ButtonType.FINISH);
+            //alert.setOnCloseRequest(EventHandler<DialogEvent> event -> stage.close());
             alert.setTitle("Attention");
             alert.setHeaderText("Folder Already Exists");
             java.util.Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
@@ -59,7 +60,7 @@ public class InitConfigScreenController extends Controller {
     }
 
     @FXML protected void onCancelButtonPress(ActionEvent event) {
-        stage.close();
+        System.exit(0);
     }
 
     public String getDirectory() {

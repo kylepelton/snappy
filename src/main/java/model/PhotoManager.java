@@ -124,4 +124,18 @@ public class PhotoManager {
     public ObservableList<Photo> getPhotos() {
         return this.photos;
     }
+
+    public void deletePhoto() {
+        // Remove currentPhoto from our list of photos
+        photos.remove(currentPhoto);
+        File directory = currentPhoto.getDirectory();
+
+        // Delete all photos in currentPhoto's directory, then delete that directory
+        String[] filesInFolder = directory.list();
+        for(String s: filesInFolder){
+            File currentFile = new File(directory.getPath(),s);
+            currentFile.delete();
+        directory.delete();
+}
+    }
 }

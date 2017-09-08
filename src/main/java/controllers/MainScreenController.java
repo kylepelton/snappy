@@ -49,7 +49,7 @@ public class MainScreenController extends Controller {
             view.setFitWidth(230);
             view.setOnMouseClicked((e) -> {
                 PhotoManager.getInstance().setCurrentPhoto(photo);
-                openScreen("viewphotoscreen", photo.getFile().getName());
+                openScreen("viewphotoscreen", photo.getName());
             });
             images.getChildren().add(view);
         }
@@ -73,7 +73,8 @@ public class MainScreenController extends Controller {
 
     public void setProperties(Properties prop) {
         this.prop = prop;
-        PhotoManager.getInstance().setProperties(this.prop);
+        PhotoManager.getInstance().setProperties(prop);
+        openScreen("loadingscreen", "Loading Photos");
     }
 
     @FXML protected void openTaggingScreen(ActionEvent event) {

@@ -87,7 +87,7 @@
                      </HBox.margin>
                   </Button>
 
-                  <Button layoutX="456.0" layoutY="25.0" mnemonicParsing="false" onAction="#onViewInFolderPress" text="View in Folder">
+                  <Button layoutX="456.0" layoutY="25.0" mnemonicParsing="false" onAction="#onDeletePhotoPress" text="Delete Photo">
                      <font>
                         <Font size="15.0" />
                      </font>

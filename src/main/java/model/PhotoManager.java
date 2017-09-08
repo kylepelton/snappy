@@ -101,11 +101,13 @@ public class PhotoManager {
         int curr = 1;
         for (File dir : photosToLoad) {
             if (dir.isDirectory()) {
-                try {
-                    Platform.runLater(() -> loadPhoto(new Photo(dir)));
-                } catch (Exception e) {
-                    System.err.println("Error: File " + dir + " is corrupted.");
-                }
+                Platform.runLater(() -> {
+                    try {
+                        loadPhoto(new Photo(dir));
+                    } catch (Exception e) {
+                        System.err.println("Error: File " + dir + " is corrupted.");
+                    }
+                });   
             }
             task.updateProgress(curr, photosToLoad.size());
             curr++;
@@ -132,5 +134,19 @@ public class PhotoManager {
 
     public ObservableList<Photo> getPhotos() {
         return this.photos;
+    }
+
+    public void deletePhoto() {
+        // Remove currentPhoto from our list of photos
+        photos.remove(currentPhoto);
+        File directory = currentPhoto.getDirectory();
+
+        // Delete all photos in currentPhoto's directory, then delete that directory
+        String[] filesInFolder = directory.list();
+        for(String s: filesInFolder){
+            File currentFile = new File(directory.getPath(),s);
+            currentFile.delete();
+        directory.delete();
+}
     }
 }

@@ -101,11 +101,13 @@ public class PhotoManager {
         int curr = 1;
         for (File dir : photosToLoad) {
             if (dir.isDirectory()) {
-                try {
-                    Platform.runLater(() -> loadPhoto(new Photo(dir)));
-                } catch (Exception e) {
-                    System.err.println("Error: File " + dir + " is corrupted.");
-                }
+                Platform.runLater(() -> {
+                    try {
+                        loadPhoto(new Photo(dir));
+                    } catch (Exception e) {
+                        System.err.println("Error: File " + dir + " is corrupted.");
+                    }
+                });   
             }
             task.updateProgress(curr, photosToLoad.size());
             curr++;

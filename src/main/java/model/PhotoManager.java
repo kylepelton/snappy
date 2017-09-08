@@ -118,6 +118,11 @@ public class PhotoManager {
         this.prop = prop;
     }
 
+    public boolean hasPhotos() {
+        photosdir = new File(prop.getProperty("photosdir"));
+        return photosdir.listFiles().length > 0;
+    }
+
     // Given a task to update progress, loads the persisted photos.
     public void loadPhotosSynchronous(LoadPhotosTask task) {
         photosdir = new File(prop.getProperty("photosdir"));

@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.nio.file.Files;
+import fxapp.LoadPhotosTask;
+import javafx.application.Platform;
 
 public class PhotoManager {
 
@@ -35,9 +37,12 @@ public class PhotoManager {
 
     public void savePhotos(List<File> photosToSave, List<String> tags) {
         for (File file : photosToSave) {
-            File newPhotoFile = new File(photosdir.toString() + File.separator + System.currentTimeMillis() + "_" + counter);
-            newPhotoFile.mkdir();
-            File imageFile = new File(newPhotoFile.toString() + File.separator + file.getName());
+            long timeAdded = System.currentTimeMillis();
+            File newPhotoDir = new File(photosdir.toString() + File.separator
+                    + timeAdded + "_" + counter);
+            newPhotoDir.mkdir();
+            File imageFile = new File(newPhotoDir.toString() + File.separator
+                    + file.getName());
             try {
                 imageFile.createNewFile();
                 OutputStream stream = new FileOutputStream(imageFile);
@@ -46,20 +51,39 @@ public class PhotoManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            File tagFile = new File(newPhotoFile.toString() + File.separator + "tags.txt");
-            try {
-                tagFile.createNewFile();
-                BufferedWriter bw = new BufferedWriter(new FileWriter(tagFile));
-                for (String tag : tags) {
-                    bw.write(tag);
-                    bw.newLine();
-                }
-                bw.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            PhotoManager.createMetadataFile(
+                    newPhotoDir.toString() + File.separator + ".metadata",
+                    imageFile.getAbsolutePath(), file.getName(), timeAdded,
+                    tags);
             counter += 1;
-            loadPhoto(new Photo(newPhotoFile));
+            try {
+                loadPhoto(new Photo(newPhotoDir));
+            } catch (Exception e) {
+                System.err.println("Error: File " + newPhotoDir + " is corrupted.");
+            }
+        }
+    }
+    
+    public static void createMetadataFile(String fileName, String imagePath,
+            String imageName, long timeAdded, List<String> tags) {
+        File tagFile = new File(fileName);
+        try {
+            tagFile.createNewFile();
+            BufferedWriter bw = new BufferedWriter(new FileWriter(tagFile));
+            // data order: image path, image name, time added, tags
+            bw.write(imagePath);
+            bw.newLine();
+            bw.write(imageName);
+            bw.newLine();
+            bw.write(Long.toString(timeAdded));
+            bw.newLine();
+            for (String tag : tags) {
+                bw.write(tag);
+                bw.newLine();
+            }
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -69,20 +93,40 @@ public class PhotoManager {
         }
     }
 
-    private void loadPhotos(File[] photosToLoad) {
-        loadPhotos(Arrays.asList(photosToLoad));
+    private void loadPhotos(File[] photosToLoad, LoadPhotosTask task) {
+        loadPhotos(Arrays.asList(photosToLoad), task);
     }
 
-    private void loadPhotos(List<File> photosToLoad) {
-        for (File file : photosToLoad) {
-            loadPhoto(new Photo(file));
+    private void loadPhotos(List<File> photosToLoad, LoadPhotosTask task) {
+        int curr = 1;
+        for (File dir : photosToLoad) {
+            if (dir.isDirectory()) {
+                Platform.runLater(() -> {
+                    try {
+                        loadPhoto(new Photo(dir));
+                    } catch (Exception e) {
+                        System.err.println("Error: File " + dir + " is corrupted.");
+                    }
+                });   
+            }
+            task.updateProgress(curr, photosToLoad.size());
+            curr++;
         }
     }
 
     public void setProperties(Properties prop) {
         this.prop = prop;
+    }
+
+    public boolean hasPhotos() {
         photosdir = new File(prop.getProperty("photosdir"));
-        loadPhotos(photosdir.listFiles());
+        return photosdir.listFiles().length > 0;
+    }
+
+    // Given a task to update progress, loads the persisted photos.
+    public void loadPhotosSynchronous(LoadPhotosTask task) {
+        photosdir = new File(prop.getProperty("photosdir"));
+        loadPhotos(photosdir.listFiles(), task);
     }
 
     public void setCurrentPhoto(Photo photo) {
@@ -95,5 +139,19 @@ public class PhotoManager {
 
     public ObservableList<Photo> getPhotos() {
         return this.photos;
+    }
+
+    public void deletePhoto() {
+        // Remove currentPhoto from our list of photos
+        photos.remove(currentPhoto);
+        File directory = currentPhoto.getDirectory();
+
+        // Delete all photos in currentPhoto's directory, then delete that directory
+        String[] filesInFolder = directory.list();
+        for(String s: filesInFolder){
+            File currentFile = new File(directory.getPath(),s);
+            currentFile.delete();
+        directory.delete();
+}
     }
 }

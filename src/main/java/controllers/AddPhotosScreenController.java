@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.scene.layout.TilePane;
 import javafx.event.EventHandler;
@@ -42,6 +43,8 @@ public class AddPhotosScreenController extends Controller {
     private FileChooser fileChooser;
     private List<File> fileList;
     private List<File> toAdd;
+    private static final String[] IMAGE_FORMATS =
+        {"*.png", "*.jpg", "*.jps", "*.gif"};
     @FXML private Pane dragarea;
     @FXML private HBox browse;
     @FXML private HBox addmore;
@@ -60,6 +63,9 @@ public class AddPhotosScreenController extends Controller {
         fileList = new ArrayList<>();
         toAdd = new ArrayList<>();
         fileChooser = new FileChooser();
+        ExtensionFilter filter = new ExtensionFilter("Image Extensions",
+                Arrays.asList(IMAGE_FORMATS));
+        fileChooser.getExtensionFilters().add(filter);
         dragarea.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {

@@ -34,20 +34,14 @@ public class Main extends Application {
             File configFile = new File(System.getProperty("user.home") + delim
                 + ".snappy" + delim + "config" + delim + "config.properties");
             if (!configFile.exists()) {
-                configFile.getParentFile().mkdirs();
-                configFile.createNewFile();
-            }
-            configInput = new FileInputStream(configFile);
-            prop.load(configInput);
-            configInput.close();
 
-            if (prop.getProperty("photosdir") == null) {
                 secondaryStage = new Stage();
                 loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource("/fxml/initialsetupscreen.fxml"));
 
                 secondaryStage.setTitle("Welcome to Snappy!");
                 secondaryStage.setScene(new Scene(loader.load()));
+                secondaryStage.setOnCloseRequest(event -> System.exit(1));
                 InitConfigScreenController initController = loader.getController();
                 initController.setStage(secondaryStage);
                 secondaryStage.showAndWait();
@@ -56,12 +50,22 @@ public class Main extends Application {
                     validSetup = true;
                     File newDir = new File(initController.getDirectory() + delim + "snappy_photos");
                     newDir.mkdir();
+
+                    configFile.getParentFile().mkdirs();
+                    configFile.createNewFile();
+                    configInput = new FileInputStream(configFile);
+                    prop.load(configInput);
+                    configInput.close();
+
                     prop.setProperty("photosdir", initController.getDirectory() + delim + "snappy_photos");
                     OutputStream configOutput = new FileOutputStream(configFile);
                     prop.store(configOutput, null);
                     configOutput.close();
                 }
             } else {
+                configInput = new FileInputStream(configFile);
+                prop.load(configInput);
+                configInput.close();
                 validSetup = true;
             }
 

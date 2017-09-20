@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.InitConfigScreenController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.InitConfigScreenController">
    <children>
       <Label layoutX="77.0" layoutY="50.0" prefHeight="46.0" prefWidth="446.0" text="Welcome to Snappy!">
          <font>
@@ -17,7 +17,7 @@
             <Button fx:id="selectDirButton" mnemonicParsing="false" onAction="#onSelectDirButtonPress" text="Select" />
          </graphic>
       </Label>
-      <Label layoutX="77.0" layoutY="99.0" prefHeight="118.0" prefWidth="446.0" text="Hi there! If you are reading this, it is most likely your first time using Snappy. We have detected that no image folder is set for this application. In order to start using this app, you will need set a directory where Snappy can create this folder. Please select a directory where there is enough diskspace for your needs, as Snappy will be storing all its photos and tags in the folder that it creates in this directory." wrapText="true" />
+      <Label layoutX="77.0" layoutY="99.0" prefHeight="118.0" prefWidth="446.0" text="Hi there!&#10;&#10;Since you're seeing this message, this is probably your first time using Snappy. Before you start, please select a directory where Snappy can store your photos and tags:" wrapText="true" />
       <Label fx:id="sizeField" layoutX="83.0" layoutY="272.0" prefHeight="25.0" prefWidth="446.0" />
       <Button fx:id="confirmButton" layoutX="444.0" layoutY="323.0" mnemonicParsing="false" onAction="#onConfirmButtonPress" text="Confirm" />
       <Button cancelButton="true" layoutX="382.0" layoutY="323.0" mnemonicParsing="false" onAction="#onCancelButtonPress" text="Cancel" />

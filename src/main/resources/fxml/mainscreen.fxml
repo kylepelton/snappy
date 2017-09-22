@@ -103,7 +103,7 @@
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </Separator>
-                  <Button alignment="BASELINE_LEFT" mnemonicParsing="false" prefHeight="46.0" prefWidth="285.0" text="Start Tagging">
+                  <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#startTaggingPressed" prefHeight="46.0" prefWidth="285.0" text="Start Tagging">
                      <VBox.margin>
                         <Insets bottom="10.0" left="20.0" />
                      </VBox.margin>

@@ -17,7 +17,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import model.PhotoManager;
 import model.Photo;
-
+import edu.cmu.sphinx.api.Configuration;
+import edu.cmu.sphinx.api.SpeechResult;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.util.ArrayList;

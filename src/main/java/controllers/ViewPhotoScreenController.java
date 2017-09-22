@@ -18,7 +18,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import model.PhotoManager;
 import model.Photo;
-
+import edu.cmu.sphinx.api.Configuration;
+import edu.cmu.sphinx.api.SpeechResult;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,6 +61,28 @@ public class ViewPhotoScreenController extends Controller {
         buttonBox.getChildren().remove(0);
         buttonBox.getChildren().remove(0);
         buttonBox.getChildren().remove(0);
+        Thread speechThread = new Thread(){
+            public void run(){
+                Configuration configuration = new Configuration();
+
+                configuration.setAcousticModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us");
+                configuration.setDictionaryPath("resource:/edu/cmu/sphinx/models/en-us/cmudict-en-us.dict");
+                configuration.setLanguageModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us.lm.bin");
+
+                try {
+                    LiveSpeechRecognizer recognizer = new LiveSpeechRecognizer(configuration);
+                    recognizer.startRecognition(true);
+                    SpeechResult result;
+                    while ((result = recognizer.getResult()) != null) {
+                        System.out.println(result.getHypothesis());
+                    }
+                    recognizer.stopRecognition();
+                } catch (Exception e) {
+                    System.out.println("NOOOO");
+                }
+              }
+        };
+        speechThread.start();
     }
 
     @FXML protected void onBackPress(ActionEvent event) {

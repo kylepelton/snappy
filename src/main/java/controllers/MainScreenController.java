@@ -74,11 +74,37 @@ public class MainScreenController extends Controller {
     }
 
     @FXML
-    private void startTaggingPressed() {
+    private void onAllPhotosPress() {
         // Case where we want to just tag all photos
+        ObservableList<Photo> photos = PhotoManager.getInstance().getPhotos();
+        if (photos.size() == 0) {
+            noPhotosMessage("You do not have any photos.");
+            return;
+        }
         TaggingScreenController taggingController =
             (TaggingScreenController) openScreen("taggingscreen", "Tagging Photos");
-        taggingController.setPhotosToTag(PhotoManager.getInstance().getPhotos());
+        taggingController.setPhotosToTag(photos);
+    }
+
+    @FXML
+    private void onUntaggedPhotosPress() {
+        ObservableList<Photo> photos = PhotoManager.getInstance().getUntaggedPhotos();
+        if (photos.size() == 0) {
+            noPhotosMessage("All existing photos have at least one tag.");
+            return;
+        }
+        TaggingScreenController taggingController =
+            (TaggingScreenController) openScreen("taggingscreen", "Tagging Photos");
+        taggingController.setPhotosToTag(photos);
+    }
+
+    private void noPhotosMessage(String message) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.WARNING,
+                message,
+                javafx.scene.control.ButtonType.OK);
+            alert.setTitle("Attention");
+            alert.setHeaderText("No Photos to Tag");
+            java.util.Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -120,13 +146,17 @@ public class MainScreenController extends Controller {
 
     // Update the "__ untagged photos" field in top right of main screen
     private void setUntaggedPhotosText() {
-        int numUntagged = 0;
-        for (Photo p : PhotoManager.getInstance().getPhotos()) {
-            if (p.getTags() == null || p.getTags().isEmpty() || p.getTags().equals("")) {
-                numUntagged++;
-            }
+        int numUntagged = PhotoManager.getInstance().getUntaggedPhotos().size();
+        //for (Photo p : PhotoManager.getInstance().getPhotos()) {
+        //    if (p.getTags() == null || p.getTags().isEmpty() || p.getTags().equals("")) {
+        //        numUntagged++;
+        //    }
+        //}
+        if (numUntagged == 1) {
+            untaggedPhotosText.setText(numUntagged + " photo untagged");
+        } else {
+            untaggedPhotosText.setText(numUntagged + " photos untagged");
         }
-        untaggedPhotosText.setText("" + numUntagged + " photos untagged");
     }
 
 }

@@ -109,7 +109,6 @@
                     <items>
                       <MenuItem mnemonicParsing="false" onAction="#onAllPhotosPress" style="-fx-font-size: 20; -fx-pref-width: 273; -fx-padding: 0 0 0 10;" text="All Photos" />
                       <MenuItem mnemonicParsing="false" onAction="#onUntaggedPhotosPress" style="-fx-font-size: 20; -fx-pref-width: 273; -fx-padding: 0 0 0 10;" text="Untagged Photos" />
-                        <MenuItem mnemonicParsing="false" onAction="#onNewPhotosPress" style="-fx-font-size: 20; -fx-pref-width: 273; -fx-padding: 0 0 0 10;" text="New Photos" />
                     </items>
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">

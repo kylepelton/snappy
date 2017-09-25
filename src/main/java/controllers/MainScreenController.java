@@ -71,6 +71,12 @@ public class MainScreenController extends Controller {
         });
     }
 
+    @FXML
+    private void startTaggingPressed() {
+        
+        openScreen("taggingscreen", "Tagging Photos");
+    }
+
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setOnCloseRequest(e -> Platform.exit());

@@ -105,12 +105,22 @@
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </Separator>
+<<<<<<< HEAD
                   <MenuButton mnemonicParsing="false" prefHeight="46.0" prefWidth="285.0" text="Start Tagging">
                     <items>
                       <MenuItem mnemonicParsing="false" text="All Photos" />
                       <MenuItem mnemonicParsing="false" text="Untagged Photos" />
                         <MenuItem mnemonicParsing="false" text="New Photos" />
                     </items>
+=======
+                  <Button alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#startTaggingPressed" prefHeight="46.0" prefWidth="285.0" text="Start Tagging">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="20.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+>>>>>>> refs/remotes/origin/ClientIntegration
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                            <image>

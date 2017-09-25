@@ -11,17 +11,23 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import model.PhotoManager;
 import model.Photo;
-
+import edu.cmu.sphinx.api.Configuration;
+import edu.cmu.sphinx.api.SpeechResult;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.fxml.FXMLLoader;
+import controllers.Controller;
 
 public class ViewPhotoScreenController extends Controller {
 
@@ -43,7 +49,17 @@ public class ViewPhotoScreenController extends Controller {
     }
 
     @FXML protected void onEditTagsPress(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/taggingscreen.fxml"));
 
+            stage.setTitle("Editing Tags");
+            stage.setScene(new Scene(loader.load()));
+            Controller taggingController = loader.getController();
+            taggingController.setStage(stage);
+        } catch (Exception e) {
+            System.out.println(e.getStackTrace());
+        }
     }
 
     @FXML public void onDeletePhotoPress(ActionEvent event) {

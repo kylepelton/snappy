@@ -27,7 +27,7 @@ public class MainScreenController extends Controller {
     @FXML private TilePane images;
     @FXML private Text untaggedPhotosText;
 
-    private void openScreen(String screen, String header) {
+    private Controller openScreen(String screen, String header) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/" + screen + ".fxml"));
@@ -42,8 +42,10 @@ public class MainScreenController extends Controller {
             Controller controller = loader.getController();
             controller.setStage(secondaryStage);
 
+            return controller;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -73,8 +75,10 @@ public class MainScreenController extends Controller {
 
     @FXML
     private void startTaggingPressed() {
-        
-        openScreen("taggingscreen", "Tagging Photos");
+        // Case where we want to just tag all photos
+        TaggingScreenController taggingController =
+            (TaggingScreenController) openScreen("taggingscreen", "Tagging Photos");
+        taggingController.setPhotosToTag(PhotoManager.getInstance().getPhotos());
     }
 
     public void setPrimaryStage(Stage primaryStage) {

@@ -141,6 +141,16 @@ public class PhotoManager {
         return this.photos;
     }
 
+    public ObservableList<Photo> getUntaggedPhotos() {
+        ObservableList<Photo> untagged = FXCollections.observableArrayList();
+        for (Photo p : photos) {
+            if (p.getTags() == null || p.getTags().isEmpty() || p.getTags().equals("")) {
+                untagged.add(p);
+            }
+        }
+        return untagged;
+    }
+
     public void deletePhoto() {
         // Remove currentPhoto from our list of photos
         photos.remove(currentPhoto);

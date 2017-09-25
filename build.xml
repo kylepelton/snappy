@@ -8,13 +8,21 @@
     <property name="jar.dir" location="${build.dir}/jar"/>
     <property name="main-class"  value="fxapp.Main"/>
 
+	<path id="class.path">
+	  <fileset dir="lib">
+	    <include name="*.jar" />
+	  </fileset>
+	</path>
+
     <target name="build">
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${classes.dir}"/>
     </target>
 
     <target name="compile" depends="build">
-        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}">
+    	<classpath refid="class.path" />
+    	</javac>
     </target>
 
     <target name="jar" depends="compile">
@@ -22,6 +30,7 @@
         <jar destfile="${jar.dir}/${ant.project.name}.jar" >
             <fileset dir="${classes.dir}"/>
             <fileset dir="${resources.dir}"/>
+        	<zipgroupfileset dir="lib" includes="*.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
             </manifest>

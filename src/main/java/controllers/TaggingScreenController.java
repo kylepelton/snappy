@@ -26,13 +26,21 @@ public class TaggingScreenController extends Controller {
 
     @FXML protected void initialize() {
         photoManager = PhotoManager.getInstance();
-        photosToTag = PhotoManager.getInstance().getPhotos();
         currentIndex = 0;
+    }
+
+    public void setPhotosToTag(ObservableList<Photo> photosToTag) {
+        this.photosToTag = photosToTag;
         photoManager.setCurrentPhoto(photosToTag.get(currentIndex));
         updateView();
     }
 
     private void updateView() {
+        boolean buttonsVisible = photosToTag.size() > 1;
+
+        previousButton.setVisible(buttonsVisible);
+        nextButton.setVisible(buttonsVisible);
+
         preview.setImage(photoManager.getCurrentPhoto().getPreviewImg());
         tagsArea.clear();
         for (String tag : photoManager.getCurrentPhoto().getTags()) {
@@ -59,7 +67,8 @@ public class TaggingScreenController extends Controller {
 
     @FXML protected void onPreviousPress() {
         saveTags();
-        currentIndex = (currentIndex - 1) % photosToTag.size();
+        currentIndex = (currentIndex - 1 < 0) ?
+            photosToTag.size() - 1 : (currentIndex - 1) % photosToTag.size();
         photoManager.setCurrentPhoto(photosToTag.get(currentIndex));
         updateView();
     }

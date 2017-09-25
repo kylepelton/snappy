@@ -9,12 +9,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import model.PhotoManager;
 import model.Photo;
@@ -35,7 +36,7 @@ public class ViewPhotoScreenController extends Controller {
     @FXML private Text name;
     @FXML private Text taken;
     @FXML private Text uploaded;
-    @FXML private TilePane tagsPane;
+    @FXML private FlowPane tagsPane;
 
     @FXML
     private void initialize() {
@@ -49,14 +50,20 @@ public class ViewPhotoScreenController extends Controller {
     }
 
     @FXML protected void onEditTagsPress(ActionEvent event) {
+        // Just tagging a single photo
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/fxml/taggingscreen.fxml"));
 
             stage.setTitle("Editing Tags");
             stage.setScene(new Scene(loader.load()));
-            Controller taggingController = loader.getController();
+            TaggingScreenController taggingController = loader.getController();
             taggingController.setStage(stage);
+
+            ObservableList<Photo> photos = FXCollections.observableArrayList();
+            photos.add(PhotoManager.getInstance().getCurrentPhoto());
+
+            taggingController.setPhotosToTag(photos);
         } catch (Exception e) {
             System.out.println(e.getStackTrace());
         }

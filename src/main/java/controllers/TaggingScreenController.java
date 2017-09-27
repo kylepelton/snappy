@@ -5,11 +5,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import java.util.ArrayList;
 
+import edu.cmu.sphinx.api.SpeechResult;
 import model.PhotoManager;
 import model.Photo;
+import model.SpeechRecognizer;
 
 public class TaggingScreenController extends Controller {
 
@@ -23,9 +26,36 @@ public class TaggingScreenController extends Controller {
     private ObservableList<Photo> photosToTag;
 
     private PhotoManager photoManager;
+    private SpeechRecognizer speechRecognizer;
+    private Thread speechThread;
 
     @FXML protected void initialize() {
         photoManager = PhotoManager.getInstance();
+        speechThread = new Thread(){ //TODO: stop thread when window is closed
+            public void run(){
+                try {
+                    speechRecognizer = SpeechRecognizer.getInstance();
+                    speechRecognizer.startRecognition(true);
+                    SpeechResult result;
+                    while ((result = speechRecognizer.getResult()) != null) {
+                        String tokens = result.getHypothesis();
+                        System.out.println(tokens);
+                        if (tokens.trim().split(" ").length < 3) {
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() { //TODO: add commands done, previous, next
+                                    tagsArea.appendText(tokens + "\n");
+                                }
+                              });
+                        }
+                    }
+                    speechRecognizer.stopRecognition();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+              }
+        };
+        speechThread.start();
         currentIndex = 0;
     }
 

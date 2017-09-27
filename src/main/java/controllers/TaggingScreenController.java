@@ -30,33 +30,42 @@ public class TaggingScreenController extends Controller {
     private Thread speechThread;
 
     @FXML protected void initialize() {
+        System.out.println("TEST");
         photoManager = PhotoManager.getInstance();
-        speechThread = new Thread(){ //TODO: stop thread when window is closed
-            public void run(){
-                try {
-                    speechRecognizer = SpeechRecognizer.getInstance();
-                    speechRecognizer.startRecognition(true);
-                    SpeechResult result;
-                    while ((result = speechRecognizer.getResult()) != null) {
-                        String tokens = result.getHypothesis();
-                        System.out.println(tokens);
-                        if (tokens.trim().split(" ").length < 3) {
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() { //TODO: add commands done, previous, next
-                                    tagsArea.appendText(tokens + "\n");
-                                }
-                              });
-                        }
-                    }
-                    speechRecognizer.stopRecognition();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-              }
-        };
+        // try {
+        //     speechRecognizer = SpeechRecognizer.getInstance();
+        //     speechRecognizer.startRecognition(true);
+        //     SpeechResult result;
+        //     while ((result = speechRecognizer.getResult()) != null) {
+        //         String tokens = result.getHypothesis().trim();
+        //         System.out.println(tokens);
+        //         if (tokens.split(" ").length < 3) {
+        //             Platform.runLater(new Runnable() {
+        //                 @Override
+        //                 public void run() {
+        //                     if (tokens.equalsIgnoreCase("done")) {
+        //                         onDonePress();
+        //                     } else if (tokens.equalsIgnoreCase("previous")) {
+        //                         onPreviousPress();
+        //                     } else if (tokens.equalsIgnoreCase("next")) {
+        //                         onNextPress();
+        //                     } else {
+        //                         tagsArea.appendText(tokens + "\n");
+        //                     }
+        //                 }
+        //             });
+        //         }
+        //     }
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+        speechThread.setDaemon(true);
         speechThread.start();
         currentIndex = 0;
+    }
+
+    public void onClose() {
+        speechThread.wait();
     }
 
     public void setPhotosToTag(ObservableList<Photo> photosToTag) {

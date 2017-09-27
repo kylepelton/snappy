@@ -24,6 +24,7 @@ public class MainScreenController extends Controller {
     private Stage primaryStage;
     private Stage secondaryStage;
     private Properties prop;
+    private Thread speechThread;
     @FXML private TilePane images;
     @FXML private Text untaggedPhotosText;
 
@@ -71,6 +72,15 @@ public class MainScreenController extends Controller {
         PhotoManager.getInstance().getPhotos().addListener((ListChangeListener) (change) -> {
             updatePhotos();
         });
+        speechThread = new Thread() {
+            public void run() {
+                try {
+                    speechRecognizer = SpeechRecognizer.getInstance();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
     }
 
     @FXML

@@ -7,14 +7,17 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import edu.cmu.sphinx.api.SpeechResult;
 import model.PhotoManager;
 import model.Photo;
 import model.SpeechRecognizer;
 
-public class TaggingScreenController extends Controller {
+public class TaggingScreenController extends Controller implements Observer {
 
     @FXML private TextArea tagsArea;
     @FXML private Button previousButton;
@@ -26,6 +29,8 @@ public class TaggingScreenController extends Controller {
     private ObservableList<Photo> photosToTag;
 
     private PhotoManager photoManager;
+
+    private SpeechRecognizer speechRecognizer;
 
     @FXML protected void initialize() {
         photoManager = PhotoManager.getInstance();
@@ -58,7 +63,36 @@ public class TaggingScreenController extends Controller {
         // }
         //speechThread.setDaemon(true);
         //speechThread.start();
+        try {
+            speechRecognizer = SpeechRecognizer.getInstance();
+            speechRecognizer.addObserver(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         currentIndex = 0;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof SpeechRecognizer) {
+            String tokens = (String)arg;
+            // For now, only consider tags that are max 2 words long
+            if (tokens.split(" ").length < 3) {
+                if (tokens.equalsIgnoreCase("done")) {
+                    // Exit the screen
+                    onDonePress();
+                } else if (tokens.equalsIgnoreCase("previous")) {
+                    // Go to the previous photo
+                    onPreviousPress();
+                } else if (tokens.equalsIgnoreCase("next")) {
+                    // Go to the next photo
+                    onNextPress();
+                } else {
+                    // Add this input as a tag to this photo
+                    tagsArea.appendText(tokens + "\n");
+                }
+            }
+        }
     }
 
     public void setPhotosToTag(ObservableList<Photo> photosToTag) {
@@ -90,7 +124,8 @@ public class TaggingScreenController extends Controller {
         ArrayList<String> tags = new ArrayList<String>();
         String[] text = tagsArea.getText().split("\n");
         for (String tag : text) {
-            if (!tag.trim().equals("")) {
+            String trimmedTag = tag.trim();
+            if (!trimmedTag.equals("") || !tags.contains(trimmedTag.toLowerCase())) {
                 tags.add(tag.trim().toLowerCase());
             }
         }

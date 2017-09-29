@@ -145,8 +145,11 @@ public class MainScreenController extends Controller {
     }
 
     @FXML protected void onVoiceControlToggle(ActionEvent event) {
+        if (speechRecognizer == null) {
+            return;
+        }
         if (!toggledOn) {
-            speechRecognizer.startRecognition(true);
+            speechRecognizer.startRecognition();
             toggledOn = true;
         } else {
             speechRecognizer.stopRecognition();

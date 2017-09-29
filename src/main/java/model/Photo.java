@@ -56,6 +56,10 @@ public class Photo {
                 600, 450, true, true);
     }
 
+    private File getImageDir() {
+        return this.imageDir;
+    }
+
     public void commitTagChanges() {
         tagsBackup.clear();
         tagsBackup.addAll(tags);
@@ -108,5 +112,17 @@ public class Photo {
 
     public Image getPreviewImg() {
         return previewImg;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        } else if (!(o instanceof Photo)) {
+            return false;
+        } else {
+            Photo other = (Photo)(o);
+            return this.imageDir.getAbsolutePath().equals(other.getImageDir().getAbsolutePath());
+        }
     }
 }

@@ -4,12 +4,13 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -30,19 +31,66 @@
             <Separator prefWidth="200.0" />
             <AnchorPane prefHeight="169.0" prefWidth="640.0">
                <children>
-                  <Text layoutX="47.0" layoutY="22.0" opacity="0.5" strokeType="OUTSIDE" strokeWidth="0.0" text="Date Taken: No data." textAlignment="CENTER" wrappingWidth="273.0" AnchorPane.topAnchor="0.41796875">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Text>
-                  <Text layoutX="320.0" layoutY="21.0" opacity="0.5" strokeType="OUTSIDE" strokeWidth="0.0" text="Location: No data." textAlignment="CENTER" wrappingWidth="273.0">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Text>
-                  <ScrollPane hbarPolicy="NEVER" layoutX="23.0" layoutY="39.0" prefHeight="120.0" prefWidth="600.0">
+                  <ScrollPane hbarPolicy="NEVER" layoutX="23.0" prefHeight="191.0" prefWidth="600.0">
                      <content>
-                        <FlowPane fx:id="tags" alignment="CENTER" prefWrapLength="600.0" prefWidth="600.0" vgap="15.0" hgap="10.0"/>
+                        <VBox prefWidth="586.0">
+                           <children>
+                              <TitledPane animated="false" expanded="false" text="Tags" VBox.vgrow="ALWAYS">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <content>
+                                    <FlowPane fx:id="tagsPane" hgap="10.0" vgap="10.0">
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                    </FlowPane>
+                                 </content>
+                              </TitledPane>
+                              <TitledPane animated="false" text="Info">
+                                <content>
+                                  <AnchorPane maxHeight="-Infinity" minHeight="85.0" minWidth="0.0" prefHeight="85.0" prefWidth="200.0">
+                                       <children>
+                                          <VBox prefHeight="200.0" prefWidth="100.0">
+                                             <children>
+                                                <Text fx:id="name" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" wrappingWidth="562.13671875">
+                                                   <VBox.margin>
+                                                      <Insets bottom="3.0" top="10.0" />
+                                                   </VBox.margin>
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="taken" strokeType="OUTSIDE" strokeWidth="0.0" text="Date Taken:" wrappingWidth="562.173828125">
+                                                   <VBox.margin>
+                                                      <Insets bottom="3.0" />
+                                                   </VBox.margin>
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Text>
+                                                <Text fx:id="uploaded" strokeType="OUTSIDE" strokeWidth="0.0" text="Date Uploaded:" wrappingWidth="562.13671875">
+                                                   <VBox.margin>
+                                                      <Insets bottom="10.0" />
+                                                   </VBox.margin>
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Text>
+                                             </children>
+                                             <padding>
+                                                <Insets left="22.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TitledPane>
+                           </children>
+                        </VBox>
                      </content>
                   </ScrollPane>
                </children>
@@ -52,65 +100,27 @@
                   <Insets left="20.0" top="20.0" />
                </VBox.margin>
             </Separator>
-            <HBox fx:id="buttonBox" alignment="CENTER_RIGHT" prefHeight="83.0" prefWidth="640.0">
+            <HBox alignment="CENTER" prefHeight="54.0" prefWidth="640.0">
                <children>
-                  <Button fx:id="confirmChangesButton" layoutX="188.0" layoutY="25.0" mnemonicParsing="false" onAction="#onConfirmChangesPress" text="Confirm">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
+                  <Button mnemonicParsing="false" onAction="#onEditTagsPress" text="Edit Tags">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#onDeletePhotoPress" text="Delete Photo">
                      <HBox.margin>
                         <Insets left="15.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="addTagButton" layoutX="288.0" layoutY="25.0" mnemonicParsing="false" onAction="#onAddTagPress" text="Add Tag">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
+                  <Separator orientation="VERTICAL" prefHeight="200.0">
                      <HBox.margin>
-                        <Insets left="15.0" />
+                        <Insets left="20.0" />
                      </HBox.margin>
-                  </Button>
-                  <Button fx:id="undoButton" layoutX="388.0" layoutY="25.0" mnemonicParsing="false" onAction="#onUndoPress" text="Undo">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
+                  </Separator>
+                  <Button defaultButton="true" mnemonicParsing="false" onAction="#onDoneButtonPress" text="Done" textAlignment="CENTER">
                      <HBox.margin>
-                        <Insets left="15.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="editTagsButton" defaultButton="true" layoutX="388.0" layoutY="25.0" mnemonicParsing="false" onAction="#onEditTagsPress" text="Edit Tags">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="15.0" />
-                     </HBox.margin>
-                  </Button>
-
-                  <Button layoutX="456.0" layoutY="25.0" mnemonicParsing="false" onAction="#onDeletePhotoPress" text="Delete Photo">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="15.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button fx:id="addPhotosButton" mnemonicParsing="false" text="Export">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="15.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button cancelButton="true" layoutX="264.0" layoutY="38.0" mnemonicParsing="false" onAction="#onBackPress" text="Back">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="15.0" right="15.0" />
-                     </HBox.margin>
-                  </Button>
+                        <Insets left="20.0" />
+                     </HBox.margin></Button>
                </children>
             </HBox>
          </children>

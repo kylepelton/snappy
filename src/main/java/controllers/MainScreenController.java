@@ -9,24 +9,32 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
 import javafx.scene.Parent;
+import javafx.scene.paint.Color;
 import javafx.scene.Scene;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import model.Photo;
 import model.PhotoManager;
+import model.SpeechRecognizer;
 
 public class MainScreenController extends Controller {
     private Stage primaryStage;
     private Stage secondaryStage;
     private Properties prop;
-    private Thread speechThread;
+    private SpeechRecognizer speechRecognizer;
+    private boolean toggledOn = false;
     @FXML private TilePane images;
     @FXML private Text untaggedPhotosText;
+    @FXML private Button voiceControlButton;
+    @FXML private Text voiceControlText;
+    @FXML private Circle voiceIndicator;
 
     private Controller openScreen(String screen, String header) {
         try {
@@ -72,7 +80,7 @@ public class MainScreenController extends Controller {
         PhotoManager.getInstance().getPhotos().addListener((ListChangeListener) (change) -> {
             updatePhotos();
         });
-        speechThread = new Thread() {
+        Thread speechThread = new Thread() {
             public void run() {
                 try {
                     speechRecognizer = SpeechRecognizer.getInstance();
@@ -81,6 +89,8 @@ public class MainScreenController extends Controller {
                 }
             }
         };
+        speechThread.setDaemon(true);
+        speechThread.start();
     }
 
     @FXML
@@ -134,6 +144,17 @@ public class MainScreenController extends Controller {
         }
     }
 
+    @FXML protected void onVoiceControlToggle(ActionEvent event) {
+        if (!toggledOn) {
+            speechRecognizer.startRecognition(true);
+            toggledOn = true;
+        } else {
+            speechRecognizer.stopRecognition();
+            toggledOn = false;
+        }
+        setVoiceControlIndicators();
+    }
+
     @FXML protected void openTaggingScreen(ActionEvent event) {
         //TODO
     }
@@ -166,6 +187,18 @@ public class MainScreenController extends Controller {
             untaggedPhotosText.setText(numUntagged + " photo untagged");
         } else {
             untaggedPhotosText.setText(numUntagged + " photos untagged");
+        }
+    }
+
+    private void setVoiceControlIndicators() {
+        if (!toggledOn) {
+            voiceControlButton.setText("Enable Voice Control");
+            voiceControlText.setText("Voice Control is Disabled");
+            voiceIndicator.setFill(Color.valueOf("#dadada"));
+        } else {
+            voiceControlButton.setText("Disable Voice Control");
+            voiceControlText.setText("Voice Control is Enabled");
+            voiceIndicator.setFill(Color.valueOf("#ff0000"));
         }
     }
 

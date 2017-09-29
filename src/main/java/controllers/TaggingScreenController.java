@@ -26,11 +26,8 @@ public class TaggingScreenController extends Controller {
     private ObservableList<Photo> photosToTag;
 
     private PhotoManager photoManager;
-    private SpeechRecognizer speechRecognizer;
-    private Thread speechThread;
 
     @FXML protected void initialize() {
-        System.out.println("TEST");
         photoManager = PhotoManager.getInstance();
         // try {
         //     speechRecognizer = SpeechRecognizer.getInstance();
@@ -59,13 +56,9 @@ public class TaggingScreenController extends Controller {
         // } catch (Exception e) {
         //     e.printStackTrace();
         // }
-        speechThread.setDaemon(true);
-        speechThread.start();
+        //speechThread.setDaemon(true);
+        //speechThread.start();
         currentIndex = 0;
-    }
-
-    public void onClose() {
-        speechThread.wait();
     }
 
     public void setPhotosToTag(ObservableList<Photo> photosToTag) {

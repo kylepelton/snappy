@@ -37,16 +37,6 @@ public class SpeechRecognizer extends Observable {
     }
 
     /*
-     * Use this to initialize SpeechRecognizer. There should only ever be one instance
-     */
-    public static SpeechRecognizer getInstance() throws IOException {
-        if (instance == null) {
-            instance = new SpeechRecognizer();
-        }
-        return instance;
-    }
-
-    /*
      *
      */
     public void startRecognition() {

@@ -51,6 +51,11 @@ public class MainScreenController extends Controller {
             Controller controller = loader.getController();
             controller.setStage(secondaryStage);
 
+            // Allow this controller to listen to speech events
+            if (speechRecognizer != null) {
+                speechRecognizer.addObserver(controller);
+            }
+
             return controller;
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +88,7 @@ public class MainScreenController extends Controller {
         Thread speechThread = new Thread() {
             public void run() {
                 try {
-                    speechRecognizer = SpeechRecognizer.getInstance();
+                    speechRecognizer = new SpeechRecognizer();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

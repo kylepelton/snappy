@@ -196,12 +196,12 @@
                         <Insets bottom="10.0" left="15.0" right="18.0" top="140.0" />
                      </VBox.margin>
                      <children>
-                        <Button fx:id="voiceControllButton" layoutX="17.0" layoutY="51.0" mnemonicParsing="false" onAction="#onVoiceControlToggle" prefHeight="39.0" prefWidth="261.0" text="Enable Voice Control">
+                        <Button fx:id="voiceControlButton" layoutX="17.0" layoutY="51.0" mnemonicParsing="false" onAction="#onVoiceControlToggle" prefHeight="39.0" prefWidth="261.0" text="Enable Voice Control">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Button>
-                        <Text layoutX="2.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Voice Control is Disabled" textAlignment="CENTER" wrappingWidth="291.0000048726797">
+                        <Text fx:id="voiceControlText" layoutX="2.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Voice Control is Disabled" textAlignment="CENTER" wrappingWidth="291.0000048726797">
                            <font>
                               <Font size="24.0" />
                            </font>

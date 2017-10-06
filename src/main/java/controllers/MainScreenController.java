@@ -20,9 +20,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import fxapp.SpeechRecognizer;
 import model.Photo;
 import model.PhotoManager;
-import model.SpeechRecognizer;
 
 public class MainScreenController extends Controller {
     private Stage primaryStage;

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.InitConfigScreenController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.InitConfigScreenController">
    <children>
       <Label layoutX="77.0" layoutY="50.0" prefHeight="46.0" prefWidth="446.0" text="Welcome to Snappy!">
          <font>
@@ -14,7 +14,7 @@
       </Label>
       <Label fx:id="directoryField" layoutX="83.0" layoutY="240.0" prefHeight="25.0" prefWidth="446.0" textAlignment="RIGHT">
          <graphic>
-            <Button fx:id="selectDirButton" mnemonicParsing="false" onAction="#onSelectDirButtonPress" text="Select" />
+            <Button fx:id="selectDirButton" mnemonicParsing="false" onAction="#onSelectDirButtonPress" text="Browse" />
          </graphic>
       </Label>
       <Label layoutX="77.0" layoutY="99.0" prefHeight="118.0" prefWidth="446.0" text="Hi there!&#10;&#10;Since you're seeing this message, this is probably your first time using Snappy. Before you start, please select a directory where Snappy can store your photos and tags:" wrapText="true" />

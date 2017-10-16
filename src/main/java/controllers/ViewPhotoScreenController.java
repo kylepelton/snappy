@@ -22,6 +22,7 @@ import model.Photo;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javafx.fxml.FXMLLoader;
@@ -40,6 +41,8 @@ public class ViewPhotoScreenController extends Controller {
         preview.setImage(PhotoManager.getInstance().getCurrentPhoto().getPreviewImg());
         updateTagView();
         name.setText("Name: " + PhotoManager.getInstance().getCurrentPhoto().getName());
+        Date photoDate = new Date(PhotoManager.getInstance().getCurrentPhoto().getTimeAdded());
+        uploaded.setText("Date Uploaded: " + photoDate.toString());
     }
 
     @FXML protected void onDoneButtonPress(ActionEvent event) {

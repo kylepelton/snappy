@@ -94,6 +94,10 @@ public class Photo {
         return name;
     }
 
+    public long getTimeAdded() {
+        return timeAdded;
+    }
+
     public File getDirectory() {
         return imageDir;
     }

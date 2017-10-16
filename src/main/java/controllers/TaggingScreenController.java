@@ -12,9 +12,10 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 import edu.cmu.sphinx.api.SpeechResult;
+
+import fxapp.SpeechRecognizer;
 import model.PhotoManager;
 import model.Photo;
-import model.SpeechRecognizer;
 
 public class TaggingScreenController extends Controller {
 

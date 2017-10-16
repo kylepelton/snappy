@@ -1,4 +1,4 @@
-package model;
+package fxapp;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -8,7 +8,7 @@ import edu.cmu.sphinx.api.SpeechResult;
 import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 
 /**
- *  SpeechRecognizer is a singleton that handles speech recognition in this application
+ *  SpeechRecognizer is class which handles speech recognition in this application
  *
  *  Speech recognition is done using CMUSphinx's sphinx4 library, which is contained in the lib folder.
  *  It is performed on its own thread.
@@ -18,8 +18,6 @@ import edu.cmu.sphinx.api.LiveSpeechRecognizer;
  *  be the resulting string taken in by the speech recognizer. For an example, see TaggingScreenController
  */
 public class SpeechRecognizer extends Observable {
-    private static SpeechRecognizer instance;
-
     private LiveSpeechRecognizer recognizer;
     private SpeechThread speechThread;
     private boolean started;
@@ -37,17 +35,7 @@ public class SpeechRecognizer extends Observable {
     }
 
     /*
-     * Use this to initialize SpeechRecognizer. There should only ever be one instance
-     */
-    public static SpeechRecognizer getInstance() throws IOException {
-        if (instance == null) {
-            instance = new SpeechRecognizer();
-        }
-        return instance;
-    }
-
-    /*
-     *
+     * Start/resume the speech thread
      */
     public void startRecognition() {
         if (!started) {
@@ -58,6 +46,9 @@ public class SpeechRecognizer extends Observable {
         }
     }
 
+    /*
+     * Pause the speech thread/speech recognition
+     */
     public void stopRecognition() {
         try {
             speechThread.speechPause();

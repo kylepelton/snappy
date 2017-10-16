@@ -88,8 +88,8 @@ public class TaggingScreenController extends Controller {
         String[] text = tagsArea.getText().split("\n");
         for (String tag : text) {
             String trimmedTag = tag.trim();
-            if (!trimmedTag.equals("") || !tags.contains(trimmedTag.toLowerCase())) {
-                tags.add(tag.trim().toLowerCase());
+            if (!trimmedTag.isEmpty() && !tags.contains(trimmedTag.toLowerCase())) {
+                tags.add(trimmedTag.toLowerCase());
             }
         }
         return tags;

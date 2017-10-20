@@ -61,14 +61,6 @@
                                                       <Font size="14.0" />
                                                    </font>
                                                 </Text>
-                                                <Text fx:id="taken" strokeType="OUTSIDE" strokeWidth="0.0" text="Date Taken:" wrappingWidth="562.173828125">
-                                                   <VBox.margin>
-                                                      <Insets bottom="3.0" />
-                                                   </VBox.margin>
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                </Text>
                                                 <Text fx:id="uploaded" strokeType="OUTSIDE" strokeWidth="0.0" text="Date Uploaded:" wrappingWidth="562.13671875">
                                                    <VBox.margin>
                                                       <Insets bottom="10.0" />

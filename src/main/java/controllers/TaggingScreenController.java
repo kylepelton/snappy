@@ -47,7 +47,7 @@ public class TaggingScreenController extends Controller {
                 } else if (tokens.equalsIgnoreCase("previous")) {
                     // Go to the previous photo
                     onPreviousPress();
-                } else if (tokens.equalsIgnoreCase("next")) {
+                } else if (tokens.equalsIgnoreCase("continue")) {
                     // Go to the next photo
                     onNextPress();
                 } else if (!tokens.equals("")) {

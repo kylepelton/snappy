@@ -47,7 +47,7 @@
                                     </FlowPane>
                                  </content>
                               </TitledPane>
-                              <TitledPane animated="false" expanded="false" text="Info">
+                              <TitledPane animated="false" expanded="true" text="Info">
                                 <content>
                                   <AnchorPane maxHeight="-Infinity" minHeight="85.0" minWidth="0.0" prefHeight="85.0" prefWidth="200.0">
                                        <children>

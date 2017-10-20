@@ -10,14 +10,14 @@ import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Observable;
-import java.util.Observer;
 
 import edu.cmu.sphinx.api.SpeechResult;
+
+import fxapp.SpeechRecognizer;
 import model.PhotoManager;
 import model.Photo;
-import model.SpeechRecognizer;
 
-public class TaggingScreenController extends Controller implements Observer {
+public class TaggingScreenController extends Controller {
 
     @FXML private TextArea tagsArea;
     @FXML private Button previousButton;
@@ -30,45 +30,8 @@ public class TaggingScreenController extends Controller implements Observer {
 
     private PhotoManager photoManager;
 
-    private SpeechRecognizer speechRecognizer;
-
     @FXML protected void initialize() {
         photoManager = PhotoManager.getInstance();
-        // try {
-        //     speechRecognizer = SpeechRecognizer.getInstance();
-        //     speechRecognizer.startRecognition(true);
-        //     SpeechResult result;
-        //     while ((result = speechRecognizer.getResult()) != null) {
-        //         String tokens = result.getHypothesis().trim();
-        //         System.out.println(tokens);
-        //         if (tokens.split(" ").length < 3) {
-        //             Platform.runLater(new Runnable() {
-        //                 @Override
-        //                 public void run() {
-        //                     if (tokens.equalsIgnoreCase("done")) {
-        //                         onDonePress();
-        //                     } else if (tokens.equalsIgnoreCase("previous")) {
-        //                         onPreviousPress();
-        //                     } else if (tokens.equalsIgnoreCase("next")) {
-        //                         onNextPress();
-        //                     } else {
-        //                         tagsArea.appendText(tokens + "\n");
-        //                     }
-        //                 }
-        //             });
-        //         }
-        //     }
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
-        //speechThread.setDaemon(true);
-        //speechThread.start();
-        try {
-            speechRecognizer = SpeechRecognizer.getInstance();
-            speechRecognizer.addObserver(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         currentIndex = 0;
     }
 
@@ -84,10 +47,10 @@ public class TaggingScreenController extends Controller implements Observer {
                 } else if (tokens.equalsIgnoreCase("previous")) {
                     // Go to the previous photo
                     onPreviousPress();
-                } else if (tokens.equalsIgnoreCase("next")) {
+                } else if (tokens.equalsIgnoreCase("continue")) {
                     // Go to the next photo
                     onNextPress();
-                } else {
+                } else if (!tokens.equals("")) {
                     // Add this input as a tag to this photo
                     tagsArea.appendText(tokens + "\n");
                 }
@@ -125,8 +88,8 @@ public class TaggingScreenController extends Controller implements Observer {
         String[] text = tagsArea.getText().split("\n");
         for (String tag : text) {
             String trimmedTag = tag.trim();
-            if (!trimmedTag.equals("") || !tags.contains(trimmedTag.toLowerCase())) {
-                tags.add(tag.trim().toLowerCase());
+            if (!trimmedTag.isEmpty() && !tags.contains(trimmedTag.toLowerCase())) {
+                tags.add(trimmedTag.toLowerCase());
             }
         }
         return tags;

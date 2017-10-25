@@ -6,6 +6,8 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.image.Image?>
@@ -36,15 +38,24 @@
                         <Button mnemonicParsing="false" text="Search" />
                      </items>
                   </ToolBar>
-                  <ScrollPane hbarPolicy="NEVER" prefHeight="720.0" prefWidth="948.0">
-                     <content>
-                        <TilePane fx:id="images" prefColumns="3" prefRows="500000000" prefTileHeight="210.0" prefTileWidth="230.0" prefWidth="930.0" vgap="10.0">
-                           <padding>
-                              <Insets left="5.0" />
-                           </padding>
-                        </TilePane>
-                     </content>
-                  </ScrollPane>
+                  <TabPane prefHeight="1550.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="View Grid">
+                           <content>
+                              <ScrollPane hbarPolicy="NEVER" prefHeight="720.0" prefWidth="948.0">
+                                 <content>
+                                    <TilePane fx:id="images" prefColumns="3" prefRows="500000000" prefTileHeight="210.0" prefTileWidth="230.0" prefWidth="930.0" vgap="10.0">
+                                       <padding>
+                                          <Insets left="5.0" />
+                                       </padding>
+                                    </TilePane>
+                                 </content>
+                              </ScrollPane>
+                           </content>
+                        </Tab>
+                      <Tab text="View Graph" />
+                    </tabs>
+                  </TabPane>
                   <ToolBar layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="200.0">
                      <items>
                         <Button mnemonicParsing="false" text="Select Multiple">
@@ -63,30 +74,6 @@
                               <Font size="22.0" />
                            </font>
                         </Text>
-                        <Button disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Export Selected Photos">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/picture_go.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                        <Button disable="true" layoutX="442.0" layoutY="10.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="155.0" text="Edit Tags">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                           <graphic>
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icons/application_edit.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
                      </items>
                   </ToolBar>
                </children>

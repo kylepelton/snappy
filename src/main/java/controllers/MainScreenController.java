@@ -163,24 +163,8 @@ public class MainScreenController extends Controller {
         setVoiceControlIndicators();
     }
 
-    @FXML protected void openTaggingScreen(ActionEvent event) {
-        //TODO
-    }
-
     @FXML protected void openAddPhotosScreen(ActionEvent event) {
         openScreen("addphotosscreen", "Add Photos");
-    }
-
-    @FXML protected void openApplicationSettingsScreen(ActionEvent event) {
-        //TODO
-    }
-
-    @FXML protected void openDisplaySettingsScreen(ActionEvent event) {
-        //TODO
-    }
-
-    @FXML protected void openHelpScreen(ActionEvent event) {
-        //TODO
     }
 
     // Update the "__ untagged photos" field in top right of main screen

@@ -29,9 +29,11 @@ public class MainScreenController extends Controller {
     private Stage secondaryStage;
     private Properties prop;
     private SpeechRecognizer speechRecognizer;
-    private boolean toggledOn = false;
+    private boolean voiceControlToggledOn = false;
+    private boolean multiSelectToggledOn = false;
     @FXML private TilePane images;
     @FXML private Text untaggedPhotosText;
+    @FXML private Button multiSelectButton;
     @FXML private Button voiceControlButton;
     @FXML private Text voiceControlText;
     @FXML private Circle voiceIndicator;
@@ -153,34 +155,27 @@ public class MainScreenController extends Controller {
         if (speechRecognizer == null) {
             return;
         }
-        if (!toggledOn) {
+        if (!voiceControlToggledOn) {
             speechRecognizer.startRecognition();
-            toggledOn = true;
+            voiceControlToggledOn = true;
         } else {
             speechRecognizer.stopRecognition();
-            toggledOn = false;
+            voiceControlToggledOn = false;
         }
         setVoiceControlIndicators();
     }
 
-    @FXML protected void openTaggingScreen(ActionEvent event) {
-        //TODO
+    @FXML protected void onMultiSelectToggle(ActionEvent event) {
+        if (!multiSelectToggledOn) {
+            multiSelectToggledOn = true;
+        } else {
+            multiSelectToggledOn = false;
+        }
+        setMultiSelectIndicators();
     }
 
     @FXML protected void openAddPhotosScreen(ActionEvent event) {
         openScreen("addphotosscreen", "Add Photos");
-    }
-
-    @FXML protected void openApplicationSettingsScreen(ActionEvent event) {
-        //TODO
-    }
-
-    @FXML protected void openDisplaySettingsScreen(ActionEvent event) {
-        //TODO
-    }
-
-    @FXML protected void openHelpScreen(ActionEvent event) {
-        //TODO
     }
 
     // Update the "__ untagged photos" field in top right of main screen
@@ -199,7 +194,7 @@ public class MainScreenController extends Controller {
     }
 
     private void setVoiceControlIndicators() {
-        if (!toggledOn) {
+        if (!voiceControlToggledOn) {
             voiceControlButton.setText("Enable Voice Control");
             voiceControlText.setText("Voice Control is Disabled");
             voiceIndicator.setFill(Color.valueOf("#dadada"));
@@ -210,4 +205,11 @@ public class MainScreenController extends Controller {
         }
     }
 
+    private void setMultiSelectIndicators() {
+        if (!multiSelectToggledOn) {
+            multiSelectButton.setText("Select Multiple");
+        } else {
+            multiSelectButton.setText("Stop Selecting");
+        }
+    }
 }

@@ -172,18 +172,6 @@ public class MainScreenController extends Controller {
         openScreen("addphotosscreen", "Add Photos");
     }
 
-    @FXML protected void openApplicationSettingsScreen(ActionEvent event) {
-        //TODO
-    }
-
-    @FXML protected void openDisplaySettingsScreen(ActionEvent event) {
-        //TODO
-    }
-
-    @FXML protected void openHelpScreen(ActionEvent event) {
-        //TODO
-    }
-
     // Update the "__ untagged photos" field in top right of main screen
     private void setUntaggedPhotosText() {
         int numUntagged = PhotoManager.getInstance().getUntaggedPhotos().size();

@@ -17,10 +17,14 @@ import javafx.application.Platform;
 
 public class PhotoManager {
 
+    // list of all photos to display
     private ObservableList<Photo> photos;
+    // current photo displayed on view/edit photo screen
     private Photo currentPhoto;
     private static PhotoManager instance = null;
+    // counter to ensure all photo directory names are unique
     private static int counter = 0;
+    // to load photo directory path
     private Properties prop;
     private File photosdir;
 
@@ -38,6 +42,7 @@ public class PhotoManager {
     public void savePhotos(List<File> photosToSave, List<String> tags) {
         for (File file : photosToSave) {
             long timeAdded = System.currentTimeMillis();
+            // directory name is timestamp + unique counter
             File newPhotoDir = new File(photosdir.toString() + File.separator
                     + timeAdded + "_" + counter);
             newPhotoDir.mkdir();
@@ -87,20 +92,19 @@ public class PhotoManager {
         }
     }
 
+    // adds photo to list of photos to show
     private void loadPhoto(Photo photoToLoad) {
         if (!this.photos.contains(photoToLoad)) {
             this.photos.add(photoToLoad);
         }
     }
 
+    // adds array of photos to list of photos to show
     private void loadPhotos(File[] photosToLoad, LoadPhotosTask task) {
-        loadPhotos(Arrays.asList(photosToLoad), task);
-    }
-
-    private void loadPhotos(List<File> photosToLoad, LoadPhotosTask task) {
         int curr = 1;
         for (File dir : photosToLoad) {
             if (dir.isDirectory()) {
+                // load photo on separate thread
                 Platform.runLater(() -> {
                     try {
                         loadPhoto(new Photo(dir));
@@ -109,7 +113,7 @@ public class PhotoManager {
                     }
                 });   
             }
-            task.updateProgress(curr, photosToLoad.size());
+            task.updateProgress(curr, photosToLoad.length);
             curr++;
         }
     }
@@ -129,10 +133,12 @@ public class PhotoManager {
         loadPhotos(photosdir.listFiles(), task);
     }
 
+    // prepare a photo for viewing/editing
     public void setCurrentPhoto(Photo photo) {
         this.currentPhoto = photo;
     }
 
+    // return currently viewed photo
     public Photo getCurrentPhoto() {
         return this.currentPhoto;
     }

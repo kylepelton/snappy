@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewPhotoScreenController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ViewPhotoScreenController">
    <children>
       <VBox prefHeight="720.0" prefWidth="640.0">
          <children>
@@ -35,7 +35,7 @@
                      <content>
                         <VBox prefWidth="586.0">
                            <children>
-                              <TitledPane animated="false" expanded="false" text="Tags" VBox.vgrow="ALWAYS">
+                              <TitledPane animated="false" text="Tags" VBox.vgrow="ALWAYS">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -47,7 +47,7 @@
                                     </FlowPane>
                                  </content>
                               </TitledPane>
-                              <TitledPane animated="false" text="Info">
+                              <TitledPane animated="false" expanded="true" text="Info">
                                 <content>
                                   <AnchorPane maxHeight="-Infinity" minHeight="85.0" minWidth="0.0" prefHeight="85.0" prefWidth="200.0">
                                        <children>
@@ -56,14 +56,6 @@
                                                 <Text fx:id="name" strokeType="OUTSIDE" strokeWidth="0.0" text="Name:" wrappingWidth="562.13671875">
                                                    <VBox.margin>
                                                       <Insets bottom="3.0" top="10.0" />
-                                                   </VBox.margin>
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                </Text>
-                                                <Text fx:id="taken" strokeType="OUTSIDE" strokeWidth="0.0" text="Date Taken:" wrappingWidth="562.173828125">
-                                                   <VBox.margin>
-                                                      <Insets bottom="3.0" />
                                                    </VBox.margin>
                                                    <font>
                                                       <Font size="14.0" />

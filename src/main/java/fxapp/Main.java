@@ -33,6 +33,7 @@ public class Main extends Application {
             String delim = System.getProperty("file.separator");
             File configFile = new File(System.getProperty("user.home") + delim
                 + ".snappy" + delim + "config" + delim + "config.properties");
+            //Show initial startup screen if first time using application
             if (!configFile.exists()) {
 
                 secondaryStage = new Stage();
@@ -46,6 +47,7 @@ public class Main extends Application {
                 initController.setStage(secondaryStage);
                 secondaryStage.showAndWait();
 
+                //Create file if valid directory location given
                 if (initController.getDirectory() != null) {
                     validSetup = true;
                     File newDir = new File(initController.getDirectory() + delim + "snappy_photos");
@@ -62,6 +64,7 @@ public class Main extends Application {
                     prop.store(configOutput, null);
                     configOutput.close();
                 }
+            //Load config file if it exists
             } else {
                 configInput = new FileInputStream(configFile);
                 prop.load(configInput);
@@ -69,6 +72,7 @@ public class Main extends Application {
                 validSetup = true;
             }
 
+            //If config file exists, start application
             if (validSetup) {
                 loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource("/fxml/mainscreen.fxml"));

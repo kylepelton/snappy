@@ -62,7 +62,7 @@
                   </TabPane>
                   <ToolBar layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="200.0">
                      <items>
-                        <Button mnemonicParsing="false" text="Select Multiple">
+                        <Button mnemonicParsing="false" onAction="#onMultiSelectToggle" text="Select Multiple">
                            <font>
                               <Font size="20.0" />
                            </font>

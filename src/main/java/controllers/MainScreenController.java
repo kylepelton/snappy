@@ -165,7 +165,12 @@ public class MainScreenController extends Controller {
     }
 
     @FXML protected void onMultiSelectToggle(ActionEvent event) {
-        //TODO
+        if (!multiSelectToggledOn) {
+            multiSelectToggledOn = true;
+        } else {
+            multiSelectToggledOn = false;
+        }
+        setMultiSelectIndicators();
     }
 
     @FXML protected void openAddPhotosScreen(ActionEvent event) {
@@ -199,4 +204,11 @@ public class MainScreenController extends Controller {
         }
     }
 
+    private void setMultiSelectIndicators() {
+        if (!multiSelectToggledOn) {
+            multiSelectButton.setText("Select Multiple");
+        } else {
+            multiSelectButton.setText("Stop Selecting");
+        }
+    }
 }

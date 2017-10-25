@@ -33,6 +33,7 @@ public class MainScreenController extends Controller {
     private boolean multiSelectToggledOn = false;
     @FXML private TilePane images;
     @FXML private Text untaggedPhotosText;
+    @FXML private Button multiSelectButton;
     @FXML private Button voiceControlButton;
     @FXML private Text voiceControlText;
     @FXML private Circle voiceIndicator;

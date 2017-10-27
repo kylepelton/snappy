@@ -1,53 +1,61 @@
-package controllers;
+package controller;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.util.List;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
+import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Stage;
-import javafx.scene.layout.TilePane;
-import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.HBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.animation.FadeTransition;
-import javafx.util.Duration;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Button;
-import javafx.scene.text.Text;
-import javax.imageio.ImageIO;
-import java.io.IOException;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.Node;
-import javafx.concurrent.Task;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import javax.imageio.ImageIO;
 
 import model.PhotoManager;
 
+/**
+ * AddPhotosScreenController is the controller for the Add Photos screen
+ *
+ * As its name suggests, this screen allows a user to add as many photos
+ * as they desire along with group tags for these images
+ */
 public class AddPhotosScreenController extends Controller {
     private Desktop desktop = Desktop.getDesktop();
     private FileChooser fileChooser;
     private List<File> fileList;
     private List<File> toAdd;
+    // The list of accepted image formats for Snappy
     private static final String[] IMAGE_FORMATS =
         {"*.png", "*.jpg", "*.jps", "*.gif"};
-    @FXML private Pane dragarea;
+    @FXML private Pane dragArea;
     @FXML private HBox browse;
-    @FXML private HBox addmore;
+    @FXML private HBox addMore;
     @FXML private HBox images;
     @FXML private ScrollPane display;
     @FXML private Button cancelButton;
@@ -58,15 +66,20 @@ public class AddPhotosScreenController extends Controller {
     @FXML private ProgressBar progress;
     @FXML private TextField tagBox;
 
+    /*
+     * Initialize this screen. See comments below for more details
+     */
     @FXML
     private void initialize() {
         fileList = new ArrayList<>();
         toAdd = new ArrayList<>();
         fileChooser = new FileChooser();
+        // Filter for files of our accepted extensions
         ExtensionFilter filter = new ExtensionFilter("Image Extensions",
                 Arrays.asList(IMAGE_FORMATS));
         fileChooser.getExtensionFilters().add(filter);
-        dragarea.setOnDragOver(new EventHandler<DragEvent>() {
+        // Handle user dragging a photo to be added over the adding area
+        dragArea.setOnDragOver(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
                 Dragboard db = event.getDragboard();
@@ -77,8 +90,9 @@ public class AddPhotosScreenController extends Controller {
                 }
             }
         });
-
-        dragarea.setOnDragDropped(new EventHandler<DragEvent>() {
+        // Handle user dropping a photo in the adding area. Add the photo
+        // to the list of photos to add
+        dragArea.setOnDragDropped(new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
                 Dragboard db = event.getDragboard();
@@ -121,11 +135,11 @@ public class AddPhotosScreenController extends Controller {
 
     private void showAddMore() {
         browse.setOpacity(1.0);
-        dragarea.setOpacity(1.0);
+        dragArea.setOpacity(1.0);
         browse.setDisable(false);
-        dragarea.setDisable(false);
-        addmore.setOpacity(0.0);
-        addmore.setDisable(true);
+        dragArea.setDisable(false);
+        addMore.setOpacity(0.0);
+        addMore.setDisable(true);
         display.setVisible(false);
         cancelButton.setVisible(true);
         fileList = new ArrayList<>();
@@ -139,9 +153,9 @@ public class AddPhotosScreenController extends Controller {
         loading.setDisable(false);
         loading.setVisible(true);
         browse.setOpacity(0.0);
-        dragarea.setOpacity(0.0);
+        dragArea.setOpacity(0.0);
         browse.setDisable(true);
-        dragarea.setDisable(true);
+        dragArea.setDisable(true);
         final ArrayList<File> checkList = new ArrayList<>();
         checkList.addAll(fileList);
         Task task = new Task<Void>() {
@@ -156,7 +170,7 @@ public class AddPhotosScreenController extends Controller {
                         } else {
                             error = true;
                         }
-                    } catch(IOException ex) {
+                    } catch (IOException ex) {
                         valid = false;
                         error = true;
                     }
@@ -176,8 +190,8 @@ public class AddPhotosScreenController extends Controller {
                 loading.setDisable(true);
                 if (toAdd.size() > 0) {
                     addPhotosButton.setDisable(false);
-                    addmore.setDisable(false);
-                    fadeIn(addmore);
+                    addMore.setDisable(false);
+                    fadeIn(addMore);
                     display.setVisible(true);
                     images.getChildren().clear();
                     for (File file : toAdd) {
@@ -238,8 +252,11 @@ public class AddPhotosScreenController extends Controller {
         showToAdd();
     }
 
-    @FXML protected void onAddPhotosPress(ActionEvent event) {
-        //TODO
+    /*
+     * Add the photos that have been selected to the app upon clicking "Add Photos"
+     */
+    @FXML
+    private void onAddPhotosPress(ActionEvent event) {
         try {
             List<String> tags = new ArrayList<>(Arrays.asList(tagBox.getText().split(",")));
             for (int i = 0; i < tags.size(); i++) {
@@ -255,15 +272,22 @@ public class AddPhotosScreenController extends Controller {
         }
     }
 
-    @FXML protected void onCancelPress(ActionEvent event) {
+    /*
+     * Close the screen upon clicking "Cancel"
+     */
+    @FXML
+    private void onCancelPress(ActionEvent event) {
         stage.close();
     }
 
-    @FXML protected void onAddCancelPress(ActionEvent event) {
+    @FXML
+    private void onAddCancelPress(ActionEvent event) {
         showToAdd();
     }
 
-    @FXML protected void onAddMorePhotosPress(ActionEvent event) {
+    
+    @FXML
+    private void onAddMorePhotosPress(ActionEvent event) {
         showAddMore();
     }
 

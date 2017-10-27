@@ -82,6 +82,7 @@ public class MainScreenController extends Controller {
                     openScreen("viewphotoscreen", photo.getName());
                 });
             } else {
+                selectedPhotos.clear();
                 view.setOnMouseClicked((e) -> {
                     if(!selectedPhotos.contains(photo)) {
                         selectedPhotos.add(photo);
@@ -106,7 +107,7 @@ public class MainScreenController extends Controller {
         selectedPhotos = FXCollections.observableList(new ArrayList<Photo>());
         selectedPhotos.addListener((ListChangeListener) (change) -> {
             int numSelected = selectedPhotos.size();
-            if(numSelected == 1) {
+            if (numSelected == 1) {
                 photoSelectionText.setText(numSelected + " photo selected");
             } else {
                 photoSelectionText.setText(numSelected + " photos selected");

@@ -12,8 +12,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import controllers.MainScreenController;
-import controllers.InitConfigScreenController;
+import controller.MainScreenController;
+import controller.InitConfigScreenController;
 
 public class Main extends Application {
 

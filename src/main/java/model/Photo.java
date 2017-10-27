@@ -14,12 +14,17 @@ import javafx.scene.image.Image;
 
 public class Photo {
     private final String name;
+    // value of System.currentTimeMillis() when photo is added
     private final long timeAdded;
+    // directory holding image
     private final File imageDir;
     private final File imageFile;
     private final File metadataFile;
+    // preliminary tag changes are stored here, so they can be undone easily
     private final List<String> tags;
+    // final tags to be saved/loaded
     private final List<String> tagsBackup;
+    // precomputed small, medium, and large image sizes
     private final Image thumbnail;
     private final Image mainScreenImg;
     private final Image previewImg;
@@ -30,9 +35,7 @@ public class Photo {
         this.imageDir = imageDir;
         tags = new ArrayList<>();
         tagsBackup = new ArrayList<>();
-        String name = null;
-        File imageFile = null;
-        long timeAdded = 0;
+        // read photo variables from metadata file
         BufferedReader br = new BufferedReader(new FileReader(metadataFile));
         imageFile = new File(br.readLine());
         name = br.readLine();
@@ -43,9 +46,6 @@ public class Photo {
             line = br.readLine();
         }
         br.close();
-        this.name = name;
-        this.imageFile = imageFile;
-        this.timeAdded = timeAdded;
         
         tagsBackup.addAll(tags);
         this.thumbnail = new Image(imageFile.toURI().toString(),
@@ -60,6 +60,7 @@ public class Photo {
         return this.imageDir;
     }
 
+    // finalize tag changes by copying tags into tagsBackup
     public void commitTagChanges() {
         tagsBackup.clear();
         tagsBackup.addAll(tags);

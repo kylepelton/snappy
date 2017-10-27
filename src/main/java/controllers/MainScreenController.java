@@ -2,9 +2,11 @@ package controllers;
 
 import java.io.File;
 import java.util.Properties;
+import java.util.ArrayList;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,9 +33,11 @@ public class MainScreenController extends Controller {
     private SpeechRecognizer speechRecognizer;
     private boolean voiceControlToggledOn = false;
     private boolean multiSelectToggledOn = false;
+    private ObservableList<Photo> selectedPhotos;
     @FXML private TilePane images;
     @FXML private Text untaggedPhotosText;
     @FXML private Button multiSelectButton;
+    @FXML private Text photoSelectionText;
     @FXML private Button voiceControlButton;
     @FXML private Text voiceControlText;
     @FXML private Circle voiceIndicator;
@@ -72,10 +76,23 @@ public class MainScreenController extends Controller {
             view.setPreserveRatio(true);
             view.setFitHeight(210);
             view.setFitWidth(230);
-            view.setOnMouseClicked((e) -> {
-                PhotoManager.getInstance().setCurrentPhoto(photo);
-                openScreen("viewphotoscreen", photo.getName());
-            });
+            if (!multiSelectToggledOn) {
+                view.setOnMouseClicked((e) -> {
+                    PhotoManager.getInstance().setCurrentPhoto(photo);
+                    openScreen("viewphotoscreen", photo.getName());
+                });
+            } else {
+                selectedPhotos.clear();
+                view.setOnMouseClicked((e) -> {
+                    if(!selectedPhotos.contains(photo)) {
+                        selectedPhotos.add(photo);
+                        view.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 50, .5, 0, 0);");
+                    } else {
+                        selectedPhotos.remove(photo);
+                        view.setStyle("");
+                    }
+                });
+            }
             images.getChildren().add(view);
         }
         // Setup number of untagged photos upon loading up application
@@ -86,6 +103,15 @@ public class MainScreenController extends Controller {
     private void initialize() {
         PhotoManager.getInstance().getPhotos().addListener((ListChangeListener) (change) -> {
             updatePhotos();
+        });
+        selectedPhotos = FXCollections.observableList(new ArrayList<Photo>());
+        selectedPhotos.addListener((ListChangeListener) (change) -> {
+            int numSelected = selectedPhotos.size();
+            if (numSelected == 1) {
+                photoSelectionText.setText(numSelected + " photo selected");
+            } else {
+                photoSelectionText.setText(numSelected + " photos selected");
+            }
         });
         Thread speechThread = new Thread() {
             public void run() {
@@ -169,8 +195,10 @@ public class MainScreenController extends Controller {
         if (!multiSelectToggledOn) {
             multiSelectToggledOn = true;
         } else {
+            selectedPhotos.clear();
             multiSelectToggledOn = false;
         }
+        updatePhotos();
         setMultiSelectIndicators();
     }
 

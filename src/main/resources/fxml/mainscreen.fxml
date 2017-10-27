@@ -73,7 +73,7 @@
                                  </image>
                               </ImageView>
                            </graphic></Button>
-                        <Text fill="#00000064" strokeType="OUTSIDE" strokeWidth="0.0" text="0 photos selected" textAlignment="CENTER" wrappingWidth="308.91552734375">
+                        <Text fx:id="photoSelectionText" fill="#00000064" strokeType="OUTSIDE" strokeWidth="0.0" text="0 photos selected" textAlignment="CENTER" wrappingWidth="308.91552734375">
                            <font>
                               <Font size="22.0" />
                            </font>

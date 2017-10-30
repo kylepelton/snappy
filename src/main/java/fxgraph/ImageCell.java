@@ -12,7 +12,7 @@ public class ImageCell extends Cell {
 
         ImageView view = new ImageView(photo);
         view.setFitWidth(100);
-        view.setFitHeight(80);
+        view.setPreserveRatio(true);
 
         setView(view);
 

@@ -111,7 +111,7 @@ public class ZoomableScrollPane extends ScrollPane {
 
         @Override
         public void handle(ScrollEvent scrollEvent) {
-            // if (scrollEvent.isControlDown())
+            if (scrollEvent.isControlDown())
             {
 
                 if (scrollEvent.getDeltaY() < 0) {

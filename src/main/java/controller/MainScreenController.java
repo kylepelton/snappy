@@ -24,16 +24,24 @@ import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.layout.BorderPane;
 
 import fxapp.SpeechRecognizer;
 import model.Photo;
 import model.PhotoManager;
+
+import com.fxgraph.graph.Graph;
+import com.fxgraph.graph.Model;
+import com.fxgraph.layout.base.Layout;
+import com.fxgraph.layout.random.RandomLayout;
+import com.fxgraph.graph.CellType;
 
 /**
  * MainScreenController is the controller for the main screen of the application
  *
  * All other screens are opened as secondary screens from this screen
  */
+
 public class MainScreenController extends Controller {
     // The main screen's stage
     private Stage primaryStage;
@@ -64,6 +72,9 @@ public class MainScreenController extends Controller {
     @FXML private Text voiceControlText;
     // Turns red if voice control on, gray if off
     @FXML private Circle voiceIndicator;
+    @FXML private BorderPane graphView;
+
+    private Graph graph;
 
     /*
      * Initializes this main screen
@@ -96,6 +107,10 @@ public class MainScreenController extends Controller {
         };
         speechThread.setDaemon(true);
         speechThread.start();
+        
+        graph = new Graph();
+
+        graphView.setCenter(graph.getScrollPane());
     }
 
     /*
@@ -134,6 +149,11 @@ public class MainScreenController extends Controller {
      */
     private void updatePhotos() {
         images.getChildren().clear();
+        Model model = graph.getModel();
+
+        graph.beginUpdate();
+        model.clear();
+
         for (Photo photo : PhotoManager.getInstance().getPhotos()) {
             ImageView view = new ImageView(photo.getMainScreenImg());
             view.setPreserveRatio(true);
@@ -157,9 +177,15 @@ public class MainScreenController extends Controller {
                 });
             }
             images.getChildren().add(view);
+            model.addImageCell(photo.getName(), photo.getPreviewImg());
         }
+
+        graph.endUpdate();
         // Setup number of untagged photos upon loading up application
         setUntaggedPhotosText();
+
+        Layout layout = new RandomLayout(graph);
+        layout.execute();
     }
 
     /*

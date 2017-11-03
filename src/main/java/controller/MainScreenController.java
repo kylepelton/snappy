@@ -107,10 +107,6 @@ public class MainScreenController extends Controller {
         };
         speechThread.setDaemon(true);
         speechThread.start();
-
-        graph = new Graph();
-
-        graphView.setCenter(graph.getScrollPane());
     }
 
     /*
@@ -172,9 +168,6 @@ public class MainScreenController extends Controller {
      */
     private void updatePhotos() {
         images.getChildren().clear();
-
-        graph.beginUpdate();
-        model.clear();
 
         for (Photo photo : PhotoManager.getInstance().getPhotos()) {
             ImageView view = new ImageView(photo.getMainScreenImg());

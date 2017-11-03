@@ -157,6 +157,20 @@ public class PhotoManager {
         return untagged;
     }
 
+    public ObservableList<Photo> getRelatedPhotos(Photo photo) {
+        ObservableList<Photo> related = FXCollections.observableArrayList();
+        for (Photo p : photos) {
+            for (String tag : p.getTags()) {
+                if (photo.getTags().contains(tag))
+                {
+                    related.add(p);
+                    break;
+                }
+            }
+        }
+        return related;
+    }
+
     public void deletePhoto() {
         // Remove currentPhoto from our list of photos
         photos.remove(currentPhoto);

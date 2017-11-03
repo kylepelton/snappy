@@ -74,8 +74,6 @@ public class MainScreenController extends Controller {
     @FXML private Circle voiceIndicator;
     @FXML private BorderPane graphView;
 
-    private Graph graph;
-
     /*
      * Initializes this main screen
      * This is called as the FXML Loader is loading this screen
@@ -107,10 +105,6 @@ public class MainScreenController extends Controller {
         };
         speechThread.setDaemon(true);
         speechThread.start();
-        
-        graph = new Graph();
-
-        graphView.setCenter(graph.getScrollPane());
     }
 
     /*
@@ -144,16 +138,35 @@ public class MainScreenController extends Controller {
         }
     }
 
+    private void createGraphForPhoto(Photo photo) {
+        Graph graph = new Graph();
+        graphView.setCenter(graph.getScrollPane());
+
+        Model model = graph.getModel();
+        graph.beginUpdate();
+
+        model.addImageCell("0", photo.getPreviewImg());
+
+        int num = 1;
+        ObservableList<Photo> related = PhotoManager.getInstance().getRelatedPhotos(photo);
+        for (Photo relatedPhoto : related) {
+            if (!relatedPhoto.equals(photo)) {
+                model.addImageCell(Integer.toString(num), relatedPhoto.getPreviewImg());
+                model.addEdge("0", Integer.toString(num));
+            }
+        }
+
+        graph.endUpdate();
+        Layout layout = new RandomLayout(graph);
+        layout.execute();
+    }
+
     /*
      * Update the photos in the grid of images on this screen
      */
     private void updatePhotos() {
         images.getChildren().clear();
-        Model model = graph.getModel();
 
-        graph.beginUpdate();
-        model.clear();
-        
         for (Photo photo : PhotoManager.getInstance().getPhotos()) {
             ImageView view = new ImageView(photo.getMainScreenImg());
             view.setPreserveRatio(true);
@@ -177,15 +190,11 @@ public class MainScreenController extends Controller {
                 });
             }
             images.getChildren().add(view);
-            model.addImageCell(photo.getName(), photo.getPreviewImg());
         }
-
-        graph.endUpdate();
         // Setup number of untagged photos upon loading up application
         setUntaggedPhotosText();
 
-        Layout layout = new RandomLayout(graph);
-        layout.execute();
+        createGraphForPhoto(PhotoManager.getInstance().getPhotos().get(0));
     }
 
     /*

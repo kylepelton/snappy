@@ -153,7 +153,7 @@ public class MainScreenController extends Controller {
 
         graph.beginUpdate();
         model.clear();
-
+        
         for (Photo photo : PhotoManager.getInstance().getPhotos()) {
             ImageView view = new ImageView(photo.getMainScreenImg());
             view.setPreserveRatio(true);
@@ -169,7 +169,7 @@ public class MainScreenController extends Controller {
                 view.setOnMouseClicked((e) -> {
                     if(!selectedPhotos.contains(photo)) {
                         selectedPhotos.add(photo);
-                        view.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 50, .5, 0, 0);");
+                        view.setStyle("-fx-effect: innershadow(one-pass-box, #039ed3, 30, 1, 0, 0);");
                     } else {
                         selectedPhotos.remove(photo);
                         view.setStyle("");

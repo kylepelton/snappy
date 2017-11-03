@@ -24,16 +24,24 @@ import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.layout.BorderPane;
 
 import fxapp.SpeechRecognizer;
 import model.Photo;
 import model.PhotoManager;
+
+import com.fxgraph.graph.Graph;
+import com.fxgraph.graph.Model;
+import com.fxgraph.layout.base.Layout;
+import com.fxgraph.layout.random.RandomLayout;
+import com.fxgraph.graph.CellType;
 
 /**
  * MainScreenController is the controller for the main screen of the application
  *
  * All other screens are opened as secondary screens from this screen
  */
+
 public class MainScreenController extends Controller {
     // The main screen's stage
     private Stage primaryStage;
@@ -64,6 +72,7 @@ public class MainScreenController extends Controller {
     @FXML private Text voiceControlText;
     // Turns red if voice control on, gray if off
     @FXML private Circle voiceIndicator;
+    @FXML private BorderPane graphView;
 
     /*
      * Initializes this main screen
@@ -129,11 +138,35 @@ public class MainScreenController extends Controller {
         }
     }
 
+    private void createGraphForPhoto(Photo photo) {
+        Graph graph = new Graph();
+        graphView.setCenter(graph.getScrollPane());
+
+        Model model = graph.getModel();
+        graph.beginUpdate();
+
+        model.addImageCell("0", photo.getPreviewImg());
+
+        int num = 1;
+        ObservableList<Photo> related = PhotoManager.getInstance().getRelatedPhotos(photo);
+        for (Photo relatedPhoto : related) {
+            if (!relatedPhoto.equals(photo)) {
+                model.addImageCell(Integer.toString(num), relatedPhoto.getPreviewImg());
+                model.addEdge("0", Integer.toString(num));
+            }
+        }
+
+        graph.endUpdate();
+        Layout layout = new RandomLayout(graph);
+        layout.execute();
+    }
+
     /*
      * Update the photos in the grid of images on this screen
      */
     private void updatePhotos() {
         images.getChildren().clear();
+
         for (Photo photo : PhotoManager.getInstance().getPhotos()) {
             ImageView view = new ImageView(photo.getMainScreenImg());
             view.setPreserveRatio(true);
@@ -149,7 +182,7 @@ public class MainScreenController extends Controller {
                 view.setOnMouseClicked((e) -> {
                     if(!selectedPhotos.contains(photo)) {
                         selectedPhotos.add(photo);
-                        view.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 50, .5, 0, 0);");
+                        view.setStyle("-fx-effect: innershadow(one-pass-box, #039ed3, 30, 1, 0, 0);");
                     } else {
                         selectedPhotos.remove(photo);
                         view.setStyle("");
@@ -160,6 +193,8 @@ public class MainScreenController extends Controller {
         }
         // Setup number of untagged photos upon loading up application
         setUntaggedPhotosText();
+
+        createGraphForPhoto(PhotoManager.getInstance().getPhotos().get(0));
     }
 
     /*

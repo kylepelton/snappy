@@ -9,7 +9,7 @@ import com.fxgraph.layout.base.Layout;
 
 public class RandomLayout extends Layout {
 
-    Graph graph;
+    private Graph graph;
 
     Random rnd = new Random();
 

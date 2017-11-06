@@ -24,16 +24,24 @@ import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.layout.BorderPane;
 
 import fxapp.SpeechRecognizer;
 import model.Photo;
 import model.PhotoManager;
+
+import com.fxgraph.graph.Graph;
+import com.fxgraph.graph.Model;
+import com.fxgraph.layout.base.Layout;
+import com.fxgraph.layout.random.RandomLayout;
+import com.fxgraph.graph.CellType;
 
 /**
  * MainScreenController is the controller for the main screen of the application
  *
  * All other screens are opened as secondary screens from this screen
  */
+
 public class MainScreenController extends Controller {
     // The main screen's stage
     private Stage primaryStage;
@@ -54,6 +62,8 @@ public class MainScreenController extends Controller {
     @FXML private TilePane images;
     // The "_ untagged photos" text
     @FXML private Text untaggedPhotosText;
+    // Icon that changes based on the state of multiselect
+    @FXML private ImageView multiSelectIndicator;
     // The button that turns multiselect on/off
     @FXML private Button multiSelectButton;
     // The "_ photos selected" text
@@ -64,6 +74,7 @@ public class MainScreenController extends Controller {
     @FXML private Text voiceControlText;
     // Turns red if voice control on, gray if off
     @FXML private Circle voiceIndicator;
+    @FXML private BorderPane graphView;
 
     /*
      * Initializes this main screen
@@ -129,11 +140,35 @@ public class MainScreenController extends Controller {
         }
     }
 
+    private void createGraphForPhoto(Photo photo) {
+        Graph graph = new Graph();
+        graphView.setCenter(graph.getScrollPane());
+
+        Model model = graph.getModel();
+        graph.beginUpdate();
+
+        model.addImageCell("0", photo.getPreviewImg());
+
+        int num = 1;
+        ObservableList<Photo> related = PhotoManager.getInstance().getRelatedPhotos(photo);
+        for (Photo relatedPhoto : related) {
+            if (!relatedPhoto.equals(photo)) {
+                model.addImageCell(Integer.toString(num), relatedPhoto.getPreviewImg());
+                model.addEdge("0", Integer.toString(num));
+            }
+        }
+
+        graph.endUpdate();
+        Layout layout = new RandomLayout(graph);
+        layout.execute();
+    }
+
     /*
      * Update the photos in the grid of images on this screen
      */
     private void updatePhotos() {
         images.getChildren().clear();
+
         for (Photo photo : PhotoManager.getInstance().getPhotos()) {
             ImageView view = new ImageView(photo.getMainScreenImg());
             view.setPreserveRatio(true);
@@ -149,7 +184,7 @@ public class MainScreenController extends Controller {
                 view.setOnMouseClicked((e) -> {
                     if(!selectedPhotos.contains(photo)) {
                         selectedPhotos.add(photo);
-                        view.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 50, .5, 0, 0);");
+                        view.setStyle("-fx-effect: innershadow(one-pass-box, #039ed3, 30, 1, 0, 0);");
                     } else {
                         selectedPhotos.remove(photo);
                         view.setStyle("");
@@ -160,13 +195,15 @@ public class MainScreenController extends Controller {
         }
         // Setup number of untagged photos upon loading up application
         setUntaggedPhotosText();
+
+        createGraphForPhoto(PhotoManager.getInstance().getPhotos().get(0));
     }
 
     /*
      * Open the tagging screen in the case where we want to tag all photos
      */
     @FXML
-    private void onAllPhotosPress() {
+    private void onTagAllPhotosPress() {
         ObservableList<Photo> photos = PhotoManager.getInstance().getPhotos();
         if (photos.size() == 0) {
             // If user has no photos, don't open the screen
@@ -182,7 +219,7 @@ public class MainScreenController extends Controller {
      * Open the tagging screen in the case where we want to tag only untagged photos
      */
     @FXML
-    private void onUntaggedPhotosPress() {
+    private void onTagUntaggedPhotosPress() {
         ObservableList<Photo> photos = PhotoManager.getInstance().getUntaggedPhotos();
         if (photos.size() == 0) {
             noPhotosMessage("All existing photos have at least one tag.");
@@ -191,6 +228,20 @@ public class MainScreenController extends Controller {
         TaggingScreenController taggingController =
             (TaggingScreenController) openScreen("taggingscreen", "Tagging Photos");
         taggingController.setPhotosToTag(photos);
+    }
+
+    /*
+     * Open the tagging screen in the case where we want to tag only selected photos
+     */
+    @FXML
+    private void onTagSelectedPhotosPress() {
+        if (selectedPhotos.size() == 0) {
+            noPhotosMessage("No photos are currently selected.");
+            return;
+        }
+        TaggingScreenController taggingController =
+            (TaggingScreenController) openScreen("taggingscreen", "Tagging Photos");
+        taggingController.setPhotosToTag(selectedPhotos);
     }
 
     /*
@@ -267,6 +318,48 @@ public class MainScreenController extends Controller {
     }
 
     /*
+     * Delete selected photos
+     */
+    @FXML
+    private void onDeleteSelectedPress(ActionEvent event) {
+        int numSelected = selectedPhotos.size();
+        if (numSelected == 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "No photos are currently selected.",
+                    ButtonType.OK);
+            alert.setTitle("Attention");
+            alert.setHeaderText("No Photos to Delete");
+            Optional<ButtonType> result = alert.showAndWait();
+        } else {
+            Photo[] photosToDelete = selectedPhotos.toArray(new Photo[numSelected]);
+            String contentString = "";
+            for (Photo ph : photosToDelete) {
+                contentString += ph.getName() + ", ";
+            }
+            contentString = contentString.substring(0, contentString.length() - 2);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to permanently delete " + contentString + "?", ButtonType.YES, ButtonType.NO);
+            alert.initOwner(primaryStage);
+            alert.setHeaderText("Permanently delete selected photos?");
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.YES) {
+                PhotoManager.getInstance().deletePhotos(photosToDelete);
+                alert = new Alert(Alert.AlertType.NONE, "Photos Deleted", ButtonType.OK);
+                alert.initOwner(primaryStage);
+                alert.setHeaderText("Successfully Deleted");
+                if (photosToDelete.length == 1) {
+                    alert.setContentText(contentString
+                        + " has been successfully deleted");
+                } else {
+                    alert.setContentText(contentString
+                        + " have been successfully deleted");
+                }
+                alert.showAndWait();
+            }
+        }
+    }
+
+    /*
      * Open the Add Photos screen upon clicking "Add Photos"
      */
     @FXML
@@ -302,12 +395,14 @@ public class MainScreenController extends Controller {
     }
 
     /*
-     * Change multiselect button text appearance
+     * Change multiselect button text and icon appearance
      */
     private void setMultiSelectIndicators() {
         if (!multiSelectToggledOn) {
+            multiSelectIndicator.setImage(new Image("/icons/add.png"));
             multiSelectButton.setText("Select Multiple");
         } else {
+            multiSelectIndicator.setImage(new Image("/icons/delete.png"));
             multiSelectButton.setText("Stop Selecting");
         }
     }

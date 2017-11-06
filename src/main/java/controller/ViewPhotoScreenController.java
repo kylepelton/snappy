@@ -21,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -42,6 +43,7 @@ public class ViewPhotoScreenController extends Controller {
     @FXML private Text name;
     @FXML private Text uploaded;
     @FXML private FlowPane tagsPane;
+    private MainScreenController mainScreenController;
 
     /*
      * Initialize the controller. Just set the preview of the image along with the
@@ -56,11 +58,29 @@ public class ViewPhotoScreenController extends Controller {
         uploaded.setText("Date Uploaded: " + photoDate.toString());
     }
 
+    public void setMainScreenController(MainScreenController mainScreenController) {
+        this.mainScreenController = mainScreenController;
+    }
+
     /*
      * Close this screen when "Done" is pressed
      */
     @FXML
     private void onDoneButtonPress(ActionEvent event) {
+        stage.close();
+    }
+
+    /*
+     * Open a new Graph Screen based on the photo currently being viewed
+     */
+    @FXML
+    private void onGraphButtonPress(ActionEvent event) {
+        //FXMLLoader loader = new FXMLLoader();
+        //loader.setLocation(getClass().getResource("/fxml/mainscreen.fxml"));
+        //Parent root = (Parent) loader.load();
+        //MainScreenController controller = loader.getController();
+        //controller.createGraphForPhoto(PhotoManager.getInstance().getCurrentPhoto());
+        mainScreenController.createGraphForPhoto(PhotoManager.getInstance().getCurrentPhoto());
         stage.close();
     }
 

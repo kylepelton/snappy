@@ -109,10 +109,15 @@
                         <Insets left="20.0" />
                      </HBox.margin>
                   </Separator>
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#onDoneButtonPress" text="Done" textAlignment="CENTER">
+                  <Button mnemonicParsing="false" onAction="#onGraphButtonPress" text="View Related Photos" textAlignment="CENTER">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin></Button>
+                  <Button defaultButton="true" layoutX="413.0" layoutY="19.0" mnemonicParsing="false" onAction="#onDoneButtonPress" text="Done" textAlignment="CENTER">
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
          </children>

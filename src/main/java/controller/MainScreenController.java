@@ -25,6 +25,10 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.Tab;
+import javafx.scene.control.SingleSelectionModel;
 
 import fxapp.SpeechRecognizer;
 import model.Photo;
@@ -72,7 +76,7 @@ public class MainScreenController extends Controller {
     @FXML private Text voiceControlText;
     // Turns red if voice control on, gray if off
     @FXML private Circle voiceIndicator;
-    @FXML private BorderPane graphView;
+    @FXML private TabPane tabPane;
 
     /*
      * Initializes this main screen
@@ -124,6 +128,9 @@ public class MainScreenController extends Controller {
             secondaryStage.show();
 
             Controller controller = loader.getController();
+            if (screen.equals("viewphotoscreen")) {
+                ((ViewPhotoScreenController) controller).setMainScreenController(this);
+            }
             controller.setStage(secondaryStage);
 
             // Allow this controller to listen to speech events
@@ -138,9 +145,19 @@ public class MainScreenController extends Controller {
         }
     }
 
-    private void createGraphForPhoto(Photo photo) {
+    public void createGraphForPhoto(Photo photo) {
+        //Create and add new tab for new graph view
         Graph graph = new Graph();
-        graphView.setCenter(graph.getScrollPane());
+        Tab tab = new Tab();
+        tab.setText(photo.getName());
+        tabPane.getTabs().add(tab);
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(graph.getScrollPane());
+
+        tab.setContent(borderPane);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
+        tab.setClosable(true);
 
         Model model = graph.getModel();
         graph.beginUpdate();
@@ -155,6 +172,9 @@ public class MainScreenController extends Controller {
                 model.addEdge("0", Integer.toString(num));
             }
         }
+
+        SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+        selectionModel.select(tab);
 
         graph.endUpdate();
         Layout layout = new RandomLayout(graph);
@@ -193,8 +213,6 @@ public class MainScreenController extends Controller {
         }
         // Setup number of untagged photos upon loading up application
         setUntaggedPhotosText();
-
-        createGraphForPhoto(PhotoManager.getInstance().getPhotos().get(0));
     }
 
     /*

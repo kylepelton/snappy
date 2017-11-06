@@ -13,7 +13,6 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.TilePane?>
@@ -39,9 +38,9 @@
                         <Button mnemonicParsing="false" text="Search" />
                      </items>
                   </ToolBar>
-                  <TabPane prefHeight="1550.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane fx:id="tabPane" prefHeight="1550.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                      <Tab text="View Grid">
+                      <Tab closable="false" text="Grid View">
                            <content>
                               <ScrollPane hbarPolicy="NEVER" prefHeight="596.0" prefWidth="958.0">
                                  <content>
@@ -60,10 +59,6 @@
                               </ScrollPane>
                            </content>
                         </Tab>
-                      <Tab text="View Graph">
-                           <content>
-                              <BorderPane fx:id="graphView" prefHeight="200.0" prefWidth="200.0" />
-                           </content></Tab>
                     </tabs>
                   </TabPane>
                   <ToolBar layoutX="10.0" layoutY="10.0" prefHeight="40.0" prefWidth="200.0">

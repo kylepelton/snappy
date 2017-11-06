@@ -28,8 +28,10 @@ public class AestheticLayout extends Layout {
 
     private final static int HEIGHT = 500;
     private final static int WIDTH = 500;
-    private final static int AREA = 500;
-    private final static double GRAVITY = 10;
+    private final static int AREA = HEIGHT * WIDTH;
+    private final static double GRAVITY = 10.0;
+    private final static int NUM_ITERS = 10;
+    private final static double eps = 1;
 
     public AestheticLayout(Graph graph) {
         this.graph = graph;
@@ -42,66 +44,76 @@ public class AestheticLayout extends Layout {
 
         // Initially give them random positions
         for (Cell node : nodes) {
-            double x = random.nextDouble() * 500;
-            double y = random.nextDouble() * 500;
+            double x = random.nextDouble() * HEIGHT;
+            double y = random.nextDouble() * WIDTH;
             node.relocate(x, y);
         }
 
-        double maxDisplace = Math.sqrt(AREA) / 10.0;
-        double k = Math.sqrt(((double)AREA) / (1.0 + nodes.size()));
+        
+        //double maxDisplace = Math.sqrt(AREA) / GRAVITY;
+        double k = Math.sqrt(((double)AREA) / (1.0 + nodes.size())) / 10;
+        double t = HEIGHT / 10;
 
-        for (Cell node1 : nodes) {
-            for (Cell node2 : nodes) {
-                if (!node1.equals(node2)) {
-                    double xDist = node1.getX() - node2.getX();
-                    double yDist = node1.getY() - node2.getY();
-                    double distance = Math.sqrt(xDist * xDist + yDist * yDist);
-
-                    if (distance > 0) {
+        for (int i = 0; i < NUM_ITERS; i++) {
+            for (Cell node1 : nodes) {
+                node1.dx = 0;
+                node1.dy = 0;
+                for (Cell node2 : nodes) {
+                    if (!node1.equals(node2)) {
+                        double xDist = node1.getX() - node2.getX();
+                        double yDist = node1.getY() - node2.getY();
+                        double distance = Math.sqrt(xDist * xDist + yDist * yDist) + eps;
+    
                         double repulsiveForce = k * k / distance;
-                        node1.dx += xDist / distance * repulsiveForce;
-                        node1.dy += yDist / distance * repulsiveForce;
+                        node1.dx += (xDist + eps * (random.nextDouble() - 0.5)) / distance * repulsiveForce;
+                        node1.dy += (yDist + eps * (random.nextDouble() - 0.5)) / distance * repulsiveForce;
+                        
                     }
                 }
             }
-        }
-
-        for (Edge e: edges) {
-            Cell source = e.getSource();
-            Cell target = e.getTarget();
-
-            double xDist = source.getX() - target.getX();
-            double yDist = target.getY() - target.getY();
-            double distance = Math.sqrt(xDist * xDist + yDist * yDist);
-
-            if (distance > 0) {
+    
+            for (Edge e: edges) {
+                Cell source = e.getSource();
+                Cell target = e.getTarget();
+    
+                double xDist = source.getX() - target.getX();
+                double yDist = target.getY() - target.getY();
+                double distance = Math.sqrt(xDist * xDist + yDist * yDist) + eps;
+    
                 double attractiveForce = distance * distance / k;
                 source.dx -= xDist / distance * attractiveForce;
                 source.dy -= yDist / distance * attractiveForce;
                 target.dx += xDist / distance * attractiveForce;
                 target.dy += yDist / distance * attractiveForce;
+                
             }
-        }
-
-        for (Cell node: nodes) {
-            double centerX = node.getX();
-            double centerY = node.getY();
-            double distance = Math.sqrt(centerX * centerX + centerY * centerY);
-            double gf = 0.01 * k * GRAVITY * distance;
-            node.dx -= gf * centerX / distance;
-            node.dy -= gf * centerY / distance;
-
-            node.dx /= 800;
-            node.dy /= 800;
-
-            distance = Math.sqrt(node.dx * node.dx + node.dy * node.dy);
-            if (distance > 0) {
-                double limitedDistance = Math.min(maxDisplace / 800, distance);
-                node.relocate(centerX + node.dx / distance * limitedDistance,
-                              centerY + node.dy / distance * limitedDistance);
+    
+            for (Cell node: nodes) {
+                double centerX = node.getX();
+                double centerY = node.getY();
+                //double distance = Math.sqrt(centerX * centerX + centerY * centerY);
+                //double gf = 0.01 * k * GRAVITY * distance;
+                //node.dx -= gf * centerX / distance;
+                //node.dy -= gf * centerY / distance;
+    
+                //node.dx /= 800;
+                //node.dy /= 800;
+                node.dx = Math.min(node.dx, t);
+                node.dy = Math.min(node.dy, t);
+                System.out.println(node.dx + "," + node.dy);
+    
+                double distance = Math.sqrt(node.dx * node.dx + node.dy * node.dy) + 1;
+                //System.out.println(distance);
+                //double limitedDistance = Math.min(t, distance);
+                System.out.println(Math.max(0, Math.min(HEIGHT, centerX + node.dx / distance * node.dx)));
+                node.relocate(Math.max(0, Math.min(HEIGHT, centerX + node.dx / distance * node.dx)),
+                              Math.max(0, Math.min(WIDTH, centerY + node.dy / distance * node.dy)));
+                System.out.println(node.getX());
+                
             }
+            
+            t /= 1.5;
         }
-
     }
 
 }

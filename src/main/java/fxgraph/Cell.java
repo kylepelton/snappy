@@ -46,7 +46,6 @@ public class Cell extends Pane {
     }
 
     public void setView(Node view) {
-
         this.view = view;
         getChildren().add(view);
 

@@ -5,9 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fxgraph.cells.RectangleCell;
 import com.fxgraph.cells.ImageCell;
 import javafx.scene.image.Image;
+import model.Photo;
+import controller.IMainScreenController;
 
 public class Model {
 
@@ -74,23 +75,9 @@ public class Model {
         return allEdges;
     }
 
-    public void addImageCell(String id, Image image) {
-        ImageCell imageCell = new ImageCell(id, image);
+    public void addImageCell(String id, Photo image, IMainScreenController controller) {
+        ImageCell imageCell = new ImageCell(id, image, controller);
         addCell(imageCell);
-    }
-
-    public void addCell(String id, CellType type) {
-
-        switch (type) {
-
-        case RECTANGLE:
-            RectangleCell rectangleCell = new RectangleCell(id);
-            addCell(rectangleCell);
-            break;
-
-        default:
-            throw new UnsupportedOperationException("Unsupported type: " + type);
-        }
     }
 
     private void addCell( Cell cell) {

@@ -46,7 +46,7 @@ import com.fxgraph.graph.CellType;
  * All other screens are opened as secondary screens from this screen
  */
 
-public class MainScreenController extends Controller {
+public class MainScreenController extends Controller implements IMainScreenController {
     // The main screen's stage
     private Stage primaryStage;
     // Any popup window is set to this stage
@@ -116,7 +116,8 @@ public class MainScreenController extends Controller {
     /*
      * Open the passed in screen as a popup window from the main screen
      */
-    private Controller openScreen(String screen, String header) {
+    @Override
+    public Controller openScreen(String screen, String header) {
         try {
             // Load this new screen
             FXMLLoader loader = new FXMLLoader();
@@ -130,9 +131,7 @@ public class MainScreenController extends Controller {
             secondaryStage.show();
 
             Controller controller = loader.getController();
-            if (screen.equals("viewphotoscreen")) {
-                ((ViewPhotoScreenController) controller).setMainScreenController(this);
-            }
+            controller.setMainScreen(this);
             controller.setStage(secondaryStage);
 
             // Allow this controller to listen to speech events
@@ -147,6 +146,7 @@ public class MainScreenController extends Controller {
         }
     }
 
+    @Override
     public void createGraphForPhoto(Photo photo) {
         //Create and add new tab for new graph view
         Graph graph = new Graph();
@@ -164,13 +164,13 @@ public class MainScreenController extends Controller {
         Model model = graph.getModel();
         graph.beginUpdate();
 
-        model.addImageCell("0", photo.getPreviewImg());
+        model.addImageCell("0", photo, this);
 
         int num = 1;
         ObservableList<Photo> related = PhotoManager.getInstance().getRelatedPhotos(photo);
         for (Photo relatedPhoto : related) {
             if (!relatedPhoto.equals(photo)) {
-                model.addImageCell(Integer.toString(num), relatedPhoto.getPreviewImg());
+                model.addImageCell(Integer.toString(num), relatedPhoto, this);
                 model.addEdge("0", Integer.toString(num));
             }
         }

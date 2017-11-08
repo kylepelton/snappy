@@ -37,7 +37,7 @@ import model.PhotoManager;
 import com.fxgraph.graph.Graph;
 import com.fxgraph.graph.Model;
 import com.fxgraph.layout.base.Layout;
-import com.fxgraph.layout.random.RandomLayout;
+import com.fxgraph.layout.aesthetic.AestheticLayout;
 import com.fxgraph.graph.CellType;
 
 /**
@@ -179,7 +179,7 @@ public class MainScreenController extends Controller {
         selectionModel.select(tab);
 
         graph.endUpdate();
-        Layout layout = new RandomLayout(graph);
+        Layout layout = new AestheticLayout(graph);
         layout.execute();
     }
 

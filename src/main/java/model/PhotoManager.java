@@ -161,14 +161,23 @@ public class PhotoManager {
         ObservableList<Photo> related = FXCollections.observableArrayList();
         for (Photo p : photos) {
             for (String tag : p.getTags()) {
-                if (photo.getTags().contains(tag))
-                {
+                if (photo.getTags().contains(tag)) {
                     related.add(p);
                     break;
                 }
             }
         }
         return related;
+    }
+
+    public ObservableList<Photo> getPhotosByTag(String searchString) {
+        ObservableList<Photo> searched = FXCollections.observableArrayList();
+        for (Photo p : photos) {
+            if (p.getTags().contains(searchString)) {
+                searched.add(p);
+            }
+        }
+        return searched;
     }
 
     public void deletePhoto() {

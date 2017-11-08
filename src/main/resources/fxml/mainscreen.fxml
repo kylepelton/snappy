@@ -29,13 +29,21 @@
                <children>
                   <ToolBar prefHeight="40.0" prefWidth="200.0">
                      <items>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Photos" textAlignment="CENTER" wrappingWidth="564.91552734375">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Photos" textAlignment="CENTER" wrappingWidth="545">
                            <font>
                               <Font size="22.0" />
                            </font>
                         </Text>
-                        <TextField prefHeight="31.0" prefWidth="291.0" promptText="Enter tags to filter..." />
-                        <Button mnemonicParsing="false" text="Search" />
+                        <TextField fx:id="searchField" prefHeight="31.0" prefWidth="291.0" promptText="Enter tags to filter..." />
+                        <Button mnemonicParsing="false" onAction="#onSearchPress" text="Search" />
+                        <Button mnemonicParsing="false" onAction="#onClearSearchPress">
+                           <graphic>
+                              <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/cross.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                      </items>
                   </ToolBar>
                   <TabPane fx:id="tabPane" prefHeight="1550.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">

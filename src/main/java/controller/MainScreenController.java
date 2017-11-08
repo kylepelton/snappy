@@ -15,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
@@ -62,6 +63,8 @@ public class MainScreenController extends Controller implements IMainScreenContr
     // The list of multiselected photos
     private ObservableList<Photo> selectedPhotos;
 
+    // The search field
+    @FXML private TextField searchField;
     // The grid of images in the main screen
     @FXML private TilePane images;
     // The "_ untagged photos" text
@@ -88,6 +91,9 @@ public class MainScreenController extends Controller implements IMainScreenContr
     private void initialize() {
         // If a change occurs, update the grid of photos
         PhotoManager.getInstance().getPhotos().addListener((ListChangeListener) (change) -> {
+            updatePhotos();
+        });
+        searchField.setOnAction(e -> {
             updatePhotos();
         });
         // Setup the thread on which speech recognition runs
@@ -188,31 +194,48 @@ public class MainScreenController extends Controller implements IMainScreenContr
      */
     private void updatePhotos() {
         images.getChildren().clear();
+        ObservableList<Photo> photos;
+        String searchString = searchField.getText().trim().toLowerCase();
 
-        for (Photo photo : PhotoManager.getInstance().getPhotos()) {
-            ImageView view = new ImageView(photo.getMainScreenImg());
+        if (searchString.isEmpty()) {
+            photos = PhotoManager.getInstance().getPhotos();
+        } else {
+            photos = PhotoManager.getInstance().getPhotosByTag(searchString);
+        }
+
+        if (photos.isEmpty()) {
+            ImageView view = new ImageView(new Image("/icons/no_images_found.png"));
             view.setPreserveRatio(true);
             view.setFitHeight(210);
             view.setFitWidth(230);
-            if (!multiSelectToggledOn) {
-                view.setOnMouseClicked((e) -> {
-                    PhotoManager.getInstance().setCurrentPhoto(photo);
-                    openScreen("viewphotoscreen", photo.getName());
-                });
-            } else {
-                selectedPhotos.clear();
-                view.setOnMouseClicked((e) -> {
-                    if(!selectedPhotos.contains(photo)) {
-                        selectedPhotos.add(photo);
-                        view.setStyle("-fx-effect: innershadow(one-pass-box, #039ed3, 30, 1, 0, 0);");
-                    } else {
-                        selectedPhotos.remove(photo);
-                        view.setStyle("");
-                    }
-                });
-            }
             images.getChildren().add(view);
+        } else {
+            for (Photo photo : photos) {
+                ImageView view = new ImageView(photo.getMainScreenImg());
+                view.setPreserveRatio(true);
+                view.setFitHeight(210);
+                view.setFitWidth(230);
+                if (!multiSelectToggledOn) {
+                    view.setOnMouseClicked((e) -> {
+                        PhotoManager.getInstance().setCurrentPhoto(photo);
+                        openScreen("viewphotoscreen", photo.getName());
+                    });
+                } else {
+                    selectedPhotos.clear();
+                    view.setOnMouseClicked((e) -> {
+                        if(!selectedPhotos.contains(photo)) {
+                            selectedPhotos.add(photo);
+                            view.setStyle("-fx-effect: innershadow(one-pass-box, #039ed3, 30, 1, 0, 0);");
+                        } else {
+                            selectedPhotos.remove(photo);
+                            view.setStyle("");
+                        }
+                    });
+                }
+                images.getChildren().add(view);
+            }
         }
+
         // Setup number of untagged photos upon loading up application
         setUntaggedPhotosText();
     }
@@ -300,6 +323,23 @@ public class MainScreenController extends Controller implements IMainScreenContr
         if (PhotoManager.getInstance().hasPhotos()) {
             openScreen("loadingscreen", "Loading Photos");
         }
+    }
+
+    /*
+     * Search for photos by tag and display results
+     */
+    @FXML
+    private void onSearchPress(ActionEvent event) {
+        updatePhotos();
+    }
+
+    /*
+     * Clear the search bar and the current search results
+     */
+    @FXML
+    private void onClearSearchPress(ActionEvent event) {
+        searchField.clear();
+        updatePhotos();
     }
 
     /*

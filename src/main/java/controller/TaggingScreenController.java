@@ -89,6 +89,8 @@ public class TaggingScreenController extends Controller {
         // Only have Previous/Next buttons if more than one photo
         boolean buttonsVisible = photosToTag.size() > 1;
 
+        stage.setTitle("Editing Tags (" + (currentIndex + 1) + "/" + photosToTag.size() + ")");
+
         previousButton.setVisible(buttonsVisible);
         nextButton.setVisible(buttonsVisible);
 

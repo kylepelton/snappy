@@ -79,7 +79,7 @@ public class ViewPhotoScreenController extends Controller {
      */
     @FXML
     private void onEditTagsPress(ActionEvent event) {
-        Controller controller = mainScreen.openScreen("taggingscreen", "Editing Tags");
+        Controller controller = mainScreen.openScreen("taggingscreen", "Editing Tags (1/1)");
 
         ObservableList<Photo> photos = FXCollections.observableArrayList();
         photos.add(PhotoManager.getInstance().getCurrentPhoto());

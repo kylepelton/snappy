@@ -64,7 +64,8 @@ public class Cell extends Pane {
      */
     public double getX() {
         Bounds bound = this.localToScene(this.getBoundsInLocal());
-        return (bound.getMinX() + bound.getMaxX()) / 2.0;
+        // bound is off by a constant
+        return (bound.getMinX() + bound.getMaxX()) / 2.0 - 50.0;
     }
 
     /*
@@ -72,6 +73,7 @@ public class Cell extends Pane {
      */
     public double getY() {
         Bounds bound = this.localToScene(this.getBoundsInLocal());
-        return (bound.getMinY() + bound.getMaxY()) / 2.0;
+        // bound is off by a constant
+        return (bound.getMinY() + bound.getMaxY()) / 2.0 - 15.0833;
     }
 }

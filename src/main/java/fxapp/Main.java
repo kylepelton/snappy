@@ -3,8 +3,9 @@ package fxapp;
 import java.util.Properties;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import javafx.application.Application;
@@ -14,6 +15,7 @@ import javafx.stage.Stage;
 
 import controller.MainScreenController;
 import controller.InitConfigScreenController;
+import fxapp.Logger;
 
 public class Main extends Application {
 
@@ -72,6 +74,16 @@ public class Main extends Application {
                 validSetup = true;
             }
 
+            //Set up log
+            File logFile = new File(System.getProperty("user.home") + delim
+                + ".snappy" + delim + "config" + delim + "LOG.txt");
+            if (logFile.exists()) {
+                logFile.delete();
+            }
+            logFile.createNewFile();
+            Logger.log("LOG FILE SUCCESSFULLY CREATED\n\n");
+
+
             //If config file exists, start application
             if (validSetup) {
                 loader = new FXMLLoader();
@@ -88,6 +100,7 @@ public class Main extends Application {
                 controller.setProperties(prop);
             }
         } catch (Exception e) {
+            // We can't guarantee at this point that the log has been created
             e.printStackTrace();
         }
     }

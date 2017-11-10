@@ -30,6 +30,7 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.Tab;
 import javafx.scene.control.SingleSelectionModel;
 
+import fxapp.Logger;
 import fxapp.SpeechRecognizer;
 import model.Photo;
 import model.PhotoManager;
@@ -38,7 +39,6 @@ import com.fxgraph.graph.Graph;
 import com.fxgraph.graph.Model;
 import com.fxgraph.layout.base.Layout;
 import com.fxgraph.layout.aesthetic.AestheticLayout;
-import com.fxgraph.graph.CellType;
 
 /**
  * MainScreenController is the controller for the main screen of the application
@@ -105,7 +105,8 @@ public class MainScreenController extends Controller implements IMainScreenContr
                 try {
                     speechRecognizer = new SpeechRecognizer();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Logger.log(e);
+                    //e.printStackTrace();
                 }
             }
         };
@@ -141,7 +142,8 @@ public class MainScreenController extends Controller implements IMainScreenContr
 
             return controller;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log(e);
+            //e.printStackTrace();
             return null;
         }
     }

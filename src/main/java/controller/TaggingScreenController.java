@@ -99,6 +99,7 @@ public class TaggingScreenController extends Controller {
         for (String tag : photoManager.getCurrentPhoto().getTags()) {
             tagsArea.setText(tagsArea.getText() + tag + "\n");
         }
+        tagsArea.deleteText(tagsArea.getText().length() - 1, tagsArea.getText().length());
     }
 
     /*

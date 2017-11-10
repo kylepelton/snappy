@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -29,6 +30,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.SingleSelectionModel;
 
 import fxapp.Logger;
@@ -285,6 +287,36 @@ public class MainScreenController extends Controller implements IMainScreenContr
         TaggingScreenController taggingController =
             (TaggingScreenController) openScreen("taggingscreen", "Tagging Photos");
         taggingController.setPhotosToTag(selectedPhotos);
+    }
+
+    /*
+     * Tag all photos with tags
+     */
+    @FXML
+    private void onTagSelectedPhotosWithPress() {
+        if (selectedPhotos.size() == 0) {
+            noPhotosMessage("No photos are currently selected.");
+            return;
+        }
+        TextInputDialog tid = new TextInputDialog();
+        tid.setTitle("Tag All Selected Photos With");
+        tid.setHeaderText("Tag all selected photos with a set of tags.\nSeparate tags with commas (,).");
+        tid.getEditor().setPromptText("Separate tags with commas (,)...");
+        Optional<String> result = tid.showAndWait();
+        if (result.isPresent()) {
+            String[] tagsToAdd = result.get().split(",");
+            for (Photo p : selectedPhotos) {
+                List<String> tags = new ArrayList<String>(p.getTags());
+                for (String t : tagsToAdd) {
+                    String trimmedTag = t.trim().toLowerCase();
+                    if (!trimmedTag.isEmpty() && !tags.contains(trimmedTag)) {
+                        tags.add(trimmedTag);
+                    }
+                }
+                p.setTags(tags);
+                p.commitTagChanges();
+            }
+        }
     }
 
     /*

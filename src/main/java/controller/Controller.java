@@ -10,12 +10,17 @@ import java.util.Observer;
 public abstract class Controller implements Observer {
     // Represents the controller's stage
     protected Stage stage;
+    protected IMainScreenController mainScreen;
     
     /*
      * Set this controller's stage
      */
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public void setMainScreen(IMainScreenController mainScreen) {
+        this.mainScreen = mainScreen;
     }
 
     /*

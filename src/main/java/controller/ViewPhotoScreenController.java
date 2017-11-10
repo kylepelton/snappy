@@ -43,7 +43,6 @@ public class ViewPhotoScreenController extends Controller {
     @FXML private Text name;
     @FXML private Text uploaded;
     @FXML private FlowPane tagsPane;
-    private MainScreenController mainScreenController;
 
     /*
      * Initialize the controller. Just set the preview of the image along with the
@@ -56,10 +55,6 @@ public class ViewPhotoScreenController extends Controller {
         name.setText("Name: " + PhotoManager.getInstance().getCurrentPhoto().getName());
         Date photoDate = new Date(PhotoManager.getInstance().getCurrentPhoto().getTimeAdded());
         uploaded.setText("Date Uploaded: " + photoDate.toString());
-    }
-
-    public void setMainScreenController(MainScreenController mainScreenController) {
-        this.mainScreenController = mainScreenController;
     }
 
     /*
@@ -75,12 +70,7 @@ public class ViewPhotoScreenController extends Controller {
      */
     @FXML
     private void onGraphButtonPress(ActionEvent event) {
-        //FXMLLoader loader = new FXMLLoader();
-        //loader.setLocation(getClass().getResource("/fxml/mainscreen.fxml"));
-        //Parent root = (Parent) loader.load();
-        //MainScreenController controller = loader.getController();
-        //controller.createGraphForPhoto(PhotoManager.getInstance().getCurrentPhoto());
-        mainScreenController.createGraphForPhoto(PhotoManager.getInstance().getCurrentPhoto());
+        mainScreen.createGraphForPhoto(PhotoManager.getInstance().getCurrentPhoto());
         stage.close();
     }
 
@@ -89,22 +79,12 @@ public class ViewPhotoScreenController extends Controller {
      */
     @FXML
     private void onEditTagsPress(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/fxml/taggingscreen.fxml"));
+        Controller controller = mainScreen.openScreen("taggingscreen", "Editing Tags (1/1)");
 
-            stage.setTitle("Editing Tags");
-            stage.setScene(new Scene(loader.load()));
-            TaggingScreenController taggingController = loader.getController();
-            taggingController.setStage(stage);
+        ObservableList<Photo> photos = FXCollections.observableArrayList();
+        photos.add(PhotoManager.getInstance().getCurrentPhoto());
 
-            ObservableList<Photo> photos = FXCollections.observableArrayList();
-            photos.add(PhotoManager.getInstance().getCurrentPhoto());
-
-            taggingController.setPhotosToTag(photos);
-        } catch (Exception e) {
-            System.out.println(e.getStackTrace());
-        }
+        ((TaggingScreenController) controller).setPhotosToTag(photos);
     }
 
     /*

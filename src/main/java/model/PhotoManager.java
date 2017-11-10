@@ -68,7 +68,7 @@ public class PhotoManager {
             }
         }
     }
-    
+
     public static void createMetadataFile(String fileName, String imagePath,
             String imageName, long timeAdded, List<String> tags) {
         File tagFile = new File(fileName);
@@ -111,7 +111,7 @@ public class PhotoManager {
                     } catch (Exception e) {
                         System.err.println("Error: File " + dir + " is corrupted.");
                     }
-                });   
+                });
             }
             task.updateProgress(curr, photosToLoad.length);
             curr++;
@@ -161,14 +161,23 @@ public class PhotoManager {
         ObservableList<Photo> related = FXCollections.observableArrayList();
         for (Photo p : photos) {
             for (String tag : p.getTags()) {
-                if (photo.getTags().contains(tag))
-                {
+                if (photo.getTags().contains(tag)) {
                     related.add(p);
                     break;
                 }
             }
         }
         return related;
+    }
+
+    public ObservableList<Photo> getPhotosByTag(String searchString) {
+        ObservableList<Photo> searched = FXCollections.observableArrayList();
+        for (Photo p : photos) {
+            if (p.getTags().contains(searchString)) {
+                searched.add(p);
+            }
+        }
+        return searched;
     }
 
     public void deletePhoto() {
@@ -178,10 +187,23 @@ public class PhotoManager {
 
         // Delete all photos in currentPhoto's directory, then delete that directory
         String[] filesInFolder = directory.list();
-        for(String s: filesInFolder){
-            File currentFile = new File(directory.getPath(),s);
+        for (String s: filesInFolder) {
+            File currentFile = new File(directory.getPath(), s);
             currentFile.delete();
+        }
         directory.delete();
-}
+    }
+
+    public void deletePhotos(Photo[] photosToDelete) {
+        for (Photo photo : photosToDelete) {
+            photos.remove(photo);
+            File directory = photo.getDirectory();
+            String[] filesInFolder = directory.list();
+            for (String s: filesInFolder) {
+                File currentFile = new File(directory.getPath(), s);
+                currentFile.delete();
+            }
+            directory.delete();
+        }
     }
 }

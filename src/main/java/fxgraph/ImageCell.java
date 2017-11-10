@@ -5,17 +5,25 @@ import javafx.scene.image.Image;
 
 import com.fxgraph.graph.Cell;
 
-public class ImageCell extends Cell {
+import model.Photo;
+import model.PhotoManager;
+import controller.IMainScreenController;
 
-    public ImageCell(String id, Image photo) {
+public class ImageCell extends Cell {
+	private Photo photo;
+
+    public ImageCell(String id, Photo photo, IMainScreenController mainscreen) {
         super(id);
 
-        ImageView view = new ImageView(photo);
+        this.photo = photo;
+        ImageView view = new ImageView(photo.getPreviewImg());
         view.setFitWidth(100);
         view.setPreserveRatio(true);
+        view.setOnMouseClicked((e) -> {
+        	PhotoManager.getInstance().setCurrentPhoto(photo);
+        	mainscreen.openScreen("viewphotoscreen", photo.getName());
+        });
 
         setView(view);
-
     }
-
 }

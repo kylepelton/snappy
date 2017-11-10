@@ -63,17 +63,13 @@ public class Cell extends Pane {
      * The center of the cell's x value
      */
     public double getX() {
-        Bounds bound = this.localToScene(this.getBoundsInLocal());
-        // bound is off by a constant
-        return (bound.getMinX() + bound.getMaxX()) / 2.0 - 50.0;
+        return this.getLayoutX();
     }
 
     /*
      * The center of the cell's y value
      */
     public double getY() {
-        Bounds bound = this.localToScene(this.getBoundsInLocal());
-        // bound is off by a constant
-        return (bound.getMinY() + bound.getMaxY()) / 2.0 - 15.0833;
+        return this.getLayoutY();
     }
 }

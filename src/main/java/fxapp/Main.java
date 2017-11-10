@@ -75,9 +75,17 @@ public class Main extends Application {
             }
 
             //Set up log
+            File logDir = new File(System.getProperty("user.home") + delim
+                + ".snappy" + delim + "logs");
+            if (!logDir.exists()) {
+                logDir.mkdirs();
+            } else if (!logDir.isDirectory()) {
+                logDir.delete();
+            }
             File logFile = new File(System.getProperty("user.home") + delim
-                + ".snappy" + delim + "config" + delim + "LOG.txt");
+                + ".snappy" + delim + "logs" + delim + "LOG.txt");
             if (logFile.exists()) {
+                // Don't know how this is possible, but leave in for sanity check
                 logFile.delete();
             }
             logFile.createNewFile();

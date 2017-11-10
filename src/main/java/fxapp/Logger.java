@@ -19,7 +19,7 @@ public class Logger {
     public static void log(String text) {
         try {
             File logFile = new File(System.getProperty("user.home") + delim
-                + ".snappy" + delim + "config" + delim + "LOG.txt");
+                + ".snappy" + delim + "logs" + delim + "LOG.txt");
             if (!logFile.exists()) {
                 // This shouldn't ever happen
             } else {
@@ -44,7 +44,7 @@ public class Logger {
     public static void log(Exception e) {
         try {
             File logFile = new File(System.getProperty("user.home") + delim
-                + ".snappy" + delim + "config" + delim + "LOG.txt");
+                + ".snappy" + delim + "logs" + delim + "LOG.txt");
             if (!logFile.exists()) {
                 // This shouldn't ever happen
             } else {

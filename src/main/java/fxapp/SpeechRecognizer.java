@@ -53,7 +53,8 @@ public class SpeechRecognizer extends Observable {
         try {
             speechThread.speechPause();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log(e);
+            //e.printStackTrace();
         }
     }
 
@@ -76,7 +77,8 @@ public class SpeechRecognizer extends Observable {
                         try {
                             pauseLock.wait();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Logger.log(e);
+                            //e.printStackTrace();
                             break;
                         }
                         if (!running) {

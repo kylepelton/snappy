@@ -44,28 +44,28 @@ public class AestheticLayout extends Layout {
         List<Edge> edges = graph.getModel().getAllEdges();
 
         // Initially position nodes in a grid
-        int stride = 1 + (int) Math.ceil(Math.sqrt(nodes.size()));
+        int stride = (int) Math.ceil(Math.sqrt(nodes.size()));
         ArrayList<Integer> coords = new ArrayList<>();
-        for (int i = 1; i < stride; i++) {
-            for (int j = 1; j < stride; j++) {
+        for (int i = 0; i < stride; i++) {
+            for (int j = 0; j < stride; j++) {
                 coords.add(i * WIDTH / stride + ((j * HEIGHT / stride) << 16));
             }
         }
-        
+
         for (int i = 0; i < nodes.size(); i++) {
             Cell node = nodes.get(i);
             int ind;
             // source image is placed near the center
             if (i == 0) {
-                ind = coords.size() / 2;
+                node.relocate(WIDTH / 2, HEIGHT / 2);
+                //ind = coords.size() / 2;
             } else {
                 ind = random.nextInt(coords.size());
+                double x = (coords.get(ind) << 16) >> 16;
+                double y = (coords.get(ind) >> 16);
+                coords.remove(ind);
+                node.relocate(x, y);
             }
-
-            double x = (coords.get(ind) << 16) >> 16;
-            double y = (coords.get(ind) >> 16);
-            coords.remove(ind);
-            node.relocate(x, y);
         }
 
         double k = Math.sqrt(((double)AREA) / (1.0 + nodes.size())) / 10;
@@ -84,19 +84,19 @@ public class AestheticLayout extends Layout {
                             yDist += eps * (random.nextDouble() - 0.5);
                         }
                         double distance = Math.sqrt(xDist * xDist + yDist * yDist) + 1e-9;
-    
-                        double repulsiveForce = k * k / distance;
+
+                        double repulsiveForce = k * k / Math.pow(distance, 1.5);
                         node1.dx += xDist / distance * repulsiveForce;
                         node1.dy += yDist / distance * repulsiveForce;
-                        
+
                     }
                 }
             }
-    
+
             for (Edge e: edges) {
                 Cell source = e.getSource();
                 Cell target = e.getTarget();
-    
+
                 double xDist = source.getX() - target.getX();
                 double yDist = target.getY() - target.getY();
                 if (Math.abs(xDist) < 1e-5 && Math.abs(yDist) < 1e-5) {
@@ -104,26 +104,28 @@ public class AestheticLayout extends Layout {
                     yDist += eps * (random.nextDouble() - 0.5);
                 }
                 double distance = Math.sqrt(xDist * xDist + yDist * yDist) + 1e-9;
-    
-                double attractiveForce =  distance / k;
+
+                double attractiveForce =  Math.sqrt(distance) / k;
                 source.dx -= xDist / distance * attractiveForce;
                 source.dy -= yDist / distance * attractiveForce;
                 target.dx += xDist / distance * attractiveForce;
                 target.dy += yDist / distance * attractiveForce;
-                
+
             }
-    
-            for (Cell node: nodes) {
+
+            for (int j = 0; j < nodes.size(); j++) {
+                if (j == 0) continue;
+                Cell node = nodes.get(j);
                 double centerX = node.getX();
                 double centerY = node.getY();
                 node.dx = Math.max(-1 * t, Math.min(node.dx, t));
                 node.dy = Math.max(-1 * t, Math.min(node.dy, t));
-    
+
                 double distance = Math.sqrt(node.dx * node.dx + node.dy * node.dy) + 1;
                 node.relocate(Math.max(0, Math.min(WIDTH, centerX + node.dx / distance * node.dx)),
                               Math.max(0, Math.min(HEIGHT, centerY + node.dy / distance * node.dy)));
             }
-            
+
             t /= 1.2;
         }
     }

@@ -37,6 +37,7 @@ import javafx.util.Duration;
 
 import javax.imageio.ImageIO;
 
+import fxapp.Logger;
 import model.PhotoManager;
 
 /**
@@ -268,7 +269,8 @@ public class AddPhotosScreenController extends Controller {
             PhotoManager.getInstance().savePhotos(toAdd, tags);
             stage.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log(e);
+            //e.printStackTrace();
         }
     }
 
@@ -285,7 +287,7 @@ public class AddPhotosScreenController extends Controller {
         showToAdd();
     }
 
-    
+
     @FXML
     private void onAddMorePhotosPress(ActionEvent event) {
         showAddMore();

@@ -21,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -65,26 +66,25 @@ public class ViewPhotoScreenController extends Controller {
     }
 
     /*
+     * Open a new Graph Screen based on the photo currently being viewed
+     */
+    @FXML
+    private void onGraphButtonPress(ActionEvent event) {
+        mainScreen.createGraphForPhoto(PhotoManager.getInstance().getCurrentPhoto());
+        stage.close();
+    }
+
+    /*
      * Switch to the tagging screen for this photo when "Edit Tags" is pressed
      */
     @FXML
     private void onEditTagsPress(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/fxml/taggingscreen.fxml"));
+        Controller controller = mainScreen.openScreen("taggingscreen", "Editing Tags (1/1)");
 
-            stage.setTitle("Editing Tags");
-            stage.setScene(new Scene(loader.load()));
-            TaggingScreenController taggingController = loader.getController();
-            taggingController.setStage(stage);
+        ObservableList<Photo> photos = FXCollections.observableArrayList();
+        photos.add(PhotoManager.getInstance().getCurrentPhoto());
 
-            ObservableList<Photo> photos = FXCollections.observableArrayList();
-            photos.add(PhotoManager.getInstance().getCurrentPhoto());
-
-            taggingController.setPhotosToTag(photos);
-        } catch (Exception e) {
-            System.out.println(e.getStackTrace());
-        }
+        ((TaggingScreenController) controller).setPhotosToTag(photos);
     }
 
     /*

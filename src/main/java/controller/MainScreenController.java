@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -15,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
@@ -24,17 +26,30 @@ import javafx.scene.Scene;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.SingleSelectionModel;
 
+import fxapp.Logger;
 import fxapp.SpeechRecognizer;
 import model.Photo;
 import model.PhotoManager;
+
+import com.fxgraph.graph.Graph;
+import com.fxgraph.graph.Model;
+import com.fxgraph.layout.base.Layout;
+import com.fxgraph.layout.aesthetic.AestheticLayout;
 
 /**
  * MainScreenController is the controller for the main screen of the application
  *
  * All other screens are opened as secondary screens from this screen
  */
-public class MainScreenController extends Controller {
+
+public class MainScreenController extends Controller implements IMainScreenController {
     // The main screen's stage
     private Stage primaryStage;
     // Any popup window is set to this stage
@@ -50,10 +65,14 @@ public class MainScreenController extends Controller {
     // The list of multiselected photos
     private ObservableList<Photo> selectedPhotos;
 
+    // The search field
+    @FXML private TextField searchField;
     // The grid of images in the main screen
     @FXML private TilePane images;
     // The "_ untagged photos" text
     @FXML private Text untaggedPhotosText;
+    // Icon that changes based on the state of multiselect
+    @FXML private ImageView multiSelectIndicator;
     // The button that turns multiselect on/off
     @FXML private Button multiSelectButton;
     // The "_ photos selected" text
@@ -64,6 +83,7 @@ public class MainScreenController extends Controller {
     @FXML private Text voiceControlText;
     // Turns red if voice control on, gray if off
     @FXML private Circle voiceIndicator;
+    @FXML private TabPane tabPane;
 
     /*
      * Initializes this main screen
@@ -73,6 +93,9 @@ public class MainScreenController extends Controller {
     private void initialize() {
         // If a change occurs, update the grid of photos
         PhotoManager.getInstance().getPhotos().addListener((ListChangeListener) (change) -> {
+            updatePhotos();
+        });
+        searchField.setOnAction(e -> {
             updatePhotos();
         });
         // Setup the thread on which speech recognition runs
@@ -90,7 +113,8 @@ public class MainScreenController extends Controller {
                 try {
                     speechRecognizer = new SpeechRecognizer();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Logger.log(e);
+                    //e.printStackTrace();
                 }
             }
         };
@@ -101,7 +125,8 @@ public class MainScreenController extends Controller {
     /*
      * Open the passed in screen as a popup window from the main screen
      */
-    private Controller openScreen(String screen, String header) {
+    @Override
+    public Controller openScreen(String screen, String header) {
         try {
             // Load this new screen
             FXMLLoader loader = new FXMLLoader();
@@ -115,6 +140,7 @@ public class MainScreenController extends Controller {
             secondaryStage.show();
 
             Controller controller = loader.getController();
+            controller.setMainScreen(this);
             controller.setStage(secondaryStage);
 
             // Allow this controller to listen to speech events
@@ -124,9 +150,47 @@ public class MainScreenController extends Controller {
 
             return controller;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log(e);
+            //e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public void createGraphForPhoto(Photo photo) {
+        //Create and add new tab for new graph view
+        Graph graph = new Graph();
+        Tab tab = new Tab();
+        tab.setText(photo.getName());
+        tabPane.getTabs().add(tab);
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(graph.getScrollPane());
+
+        tab.setContent(borderPane);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
+        tab.setClosable(true);
+
+        Model model = graph.getModel();
+        graph.beginUpdate();
+
+        model.addImageCell("0", photo, this);
+
+        int num = 1;
+        ObservableList<Photo> related = PhotoManager.getInstance().getRelatedPhotos(photo);
+        for (Photo relatedPhoto : related) {
+            if (!relatedPhoto.equals(photo)) {
+                model.addImageCell(Integer.toString(num), relatedPhoto, this);
+                model.addEdge("0", Integer.toString(num));
+            }
+        }
+
+        SingleSelectionModel<Tab> selectionModel = tabPane.getSelectionModel();
+        selectionModel.select(tab);
+
+        graph.endUpdate();
+        Layout layout = new AestheticLayout(graph);
+        layout.execute();
     }
 
     /*
@@ -134,30 +198,48 @@ public class MainScreenController extends Controller {
      */
     private void updatePhotos() {
         images.getChildren().clear();
-        for (Photo photo : PhotoManager.getInstance().getPhotos()) {
-            ImageView view = new ImageView(photo.getMainScreenImg());
+        ObservableList<Photo> photos;
+        String searchString = searchField.getText().trim().toLowerCase();
+
+        if (searchString.isEmpty()) {
+            photos = PhotoManager.getInstance().getPhotos();
+        } else {
+            photos = PhotoManager.getInstance().getPhotosByTag(searchString);
+        }
+
+        if (photos.isEmpty()) {
+            ImageView view = new ImageView(new Image("/icons/no_images_found.png"));
             view.setPreserveRatio(true);
             view.setFitHeight(210);
             view.setFitWidth(230);
-            if (!multiSelectToggledOn) {
-                view.setOnMouseClicked((e) -> {
-                    PhotoManager.getInstance().setCurrentPhoto(photo);
-                    openScreen("viewphotoscreen", photo.getName());
-                });
-            } else {
-                selectedPhotos.clear();
-                view.setOnMouseClicked((e) -> {
-                    if(!selectedPhotos.contains(photo)) {
-                        selectedPhotos.add(photo);
-                        view.setStyle("-fx-effect: innershadow(gaussian, #039ed3, 50, .5, 0, 0);");
-                    } else {
-                        selectedPhotos.remove(photo);
-                        view.setStyle("");
-                    }
-                });
-            }
             images.getChildren().add(view);
+        } else {
+            for (Photo photo : photos) {
+                ImageView view = new ImageView(photo.getMainScreenImg());
+                view.setPreserveRatio(true);
+                view.setFitHeight(210);
+                view.setFitWidth(230);
+                if (!multiSelectToggledOn) {
+                    view.setOnMouseClicked((e) -> {
+                        PhotoManager.getInstance().setCurrentPhoto(photo);
+                        openScreen("viewphotoscreen", photo.getName());
+                    });
+                } else {
+                    selectedPhotos.clear();
+                    view.setOnMouseClicked((e) -> {
+                        if(!selectedPhotos.contains(photo)) {
+                            selectedPhotos.add(photo);
+                            view.setStyle("-fx-effect: innershadow(one-pass-box, #039ed3, 30, 1, 0, 0);");
+                        } else {
+                            selectedPhotos.remove(photo);
+                            view.setStyle("");
+                        }
+                    });
+                }
+                images.getChildren().add(view);
+            }
         }
+
         // Setup number of untagged photos upon loading up application
         setUntaggedPhotosText();
     }
@@ -166,7 +248,7 @@ public class MainScreenController extends Controller {
      * Open the tagging screen in the case where we want to tag all photos
      */
     @FXML
-    private void onAllPhotosPress() {
+    private void onTagAllPhotosPress() {
         ObservableList<Photo> photos = PhotoManager.getInstance().getPhotos();
         if (photos.size() == 0) {
             // If user has no photos, don't open the screen
@@ -182,7 +264,7 @@ public class MainScreenController extends Controller {
      * Open the tagging screen in the case where we want to tag only untagged photos
      */
     @FXML
-    private void onUntaggedPhotosPress() {
+    private void onTagUntaggedPhotosPress() {
         ObservableList<Photo> photos = PhotoManager.getInstance().getUntaggedPhotos();
         if (photos.size() == 0) {
             noPhotosMessage("All existing photos have at least one tag.");
@@ -191,6 +273,50 @@ public class MainScreenController extends Controller {
         TaggingScreenController taggingController =
             (TaggingScreenController) openScreen("taggingscreen", "Tagging Photos");
         taggingController.setPhotosToTag(photos);
+    }
+
+    /*
+     * Open the tagging screen in the case where we want to tag only selected photos
+     */
+    @FXML
+    private void onTagSelectedPhotosPress() {
+        if (selectedPhotos.size() == 0) {
+            noPhotosMessage("No photos are currently selected.");
+            return;
+        }
+        TaggingScreenController taggingController =
+            (TaggingScreenController) openScreen("taggingscreen", "Tagging Photos");
+        taggingController.setPhotosToTag(selectedPhotos);
+    }
+
+    /*
+     * Tag all photos with tags
+     */
+    @FXML
+    private void onTagSelectedPhotosWithPress() {
+        if (selectedPhotos.size() == 0) {
+            noPhotosMessage("No photos are currently selected.");
+            return;
+        }
+        TextInputDialog tid = new TextInputDialog();
+        tid.setTitle("Tag All Selected Photos With");
+        tid.setHeaderText("Tag all selected photos with a set of tags.\nSeparate tags with commas (,).");
+        tid.getEditor().setPromptText("Separate tags with commas (,)...");
+        Optional<String> result = tid.showAndWait();
+        if (result.isPresent()) {
+            String[] tagsToAdd = result.get().split(",");
+            for (Photo p : selectedPhotos) {
+                List<String> tags = new ArrayList<String>(p.getTags());
+                for (String t : tagsToAdd) {
+                    String trimmedTag = t.trim().toLowerCase();
+                    if (!trimmedTag.isEmpty() && !tags.contains(trimmedTag)) {
+                        tags.add(trimmedTag);
+                    }
+                }
+                p.setTags(tags);
+                p.commitTagChanges();
+            }
+        }
     }
 
     /*
@@ -234,6 +360,23 @@ public class MainScreenController extends Controller {
     }
 
     /*
+     * Search for photos by tag and display results
+     */
+    @FXML
+    private void onSearchPress(ActionEvent event) {
+        updatePhotos();
+    }
+
+    /*
+     * Clear the search bar and the current search results
+     */
+    @FXML
+    private void onClearSearchPress(ActionEvent event) {
+        searchField.clear();
+        updatePhotos();
+    }
+
+    /*
      * Turn voice control on/off
      */
     @FXML
@@ -264,6 +407,48 @@ public class MainScreenController extends Controller {
         }
         updatePhotos();
         setMultiSelectIndicators();
+    }
+
+    /*
+     * Delete selected photos
+     */
+    @FXML
+    private void onDeleteSelectedPress(ActionEvent event) {
+        int numSelected = selectedPhotos.size();
+        if (numSelected == 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "No photos are currently selected.",
+                    ButtonType.OK);
+            alert.setTitle("Attention");
+            alert.setHeaderText("No Photos to Delete");
+            Optional<ButtonType> result = alert.showAndWait();
+        } else {
+            Photo[] photosToDelete = selectedPhotos.toArray(new Photo[numSelected]);
+            String contentString = "";
+            for (Photo ph : photosToDelete) {
+                contentString += ph.getName() + ", ";
+            }
+            contentString = contentString.substring(0, contentString.length() - 2);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to permanently delete " + contentString + "?", ButtonType.YES, ButtonType.NO);
+            alert.initOwner(primaryStage);
+            alert.setHeaderText("Permanently delete selected photos?");
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.YES) {
+                PhotoManager.getInstance().deletePhotos(photosToDelete);
+                alert = new Alert(Alert.AlertType.NONE, "Photos Deleted", ButtonType.OK);
+                alert.initOwner(primaryStage);
+                alert.setHeaderText("Successfully Deleted");
+                if (photosToDelete.length == 1) {
+                    alert.setContentText(contentString
+                        + " has been successfully deleted");
+                } else {
+                    alert.setContentText(contentString
+                        + " have been successfully deleted");
+                }
+                alert.showAndWait();
+            }
+        }
     }
 
     /*
@@ -302,12 +487,14 @@ public class MainScreenController extends Controller {
     }
 
     /*
-     * Change multiselect button text appearance
+     * Change multiselect button text and icon appearance
      */
     private void setMultiSelectIndicators() {
         if (!multiSelectToggledOn) {
+            multiSelectIndicator.setImage(new Image("/icons/add.png"));
             multiSelectButton.setText("Select Multiple");
         } else {
+            multiSelectIndicator.setImage(new Image("/icons/delete.png"));
             multiSelectButton.setText("Stop Selecting");
         }
     }

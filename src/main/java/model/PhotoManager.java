@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import fxapp.LoadPhotosTask;
 import javafx.application.Platform;
+import fxapp.Logger;
 
 public class PhotoManager {
 
@@ -54,7 +55,8 @@ public class PhotoManager {
                 Files.copy(file.toPath(), stream);
                 stream.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.log(e);
+                //e.printStackTrace();
             }
             PhotoManager.createMetadataFile(
                     newPhotoDir.toString() + File.separator + ".metadata",
@@ -68,7 +70,7 @@ public class PhotoManager {
             }
         }
     }
-    
+
     public static void createMetadataFile(String fileName, String imagePath,
             String imageName, long timeAdded, List<String> tags) {
         File tagFile = new File(fileName);
@@ -88,7 +90,8 @@ public class PhotoManager {
             }
             bw.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log(e);
+            //e.printStackTrace();
         }
     }
 
@@ -111,7 +114,7 @@ public class PhotoManager {
                     } catch (Exception e) {
                         System.err.println("Error: File " + dir + " is corrupted.");
                     }
-                });   
+                });
             }
             task.updateProgress(curr, photosToLoad.length);
             curr++;
@@ -157,6 +160,29 @@ public class PhotoManager {
         return untagged;
     }
 
+    public ObservableList<Photo> getRelatedPhotos(Photo photo) {
+        ObservableList<Photo> related = FXCollections.observableArrayList();
+        for (Photo p : photos) {
+            for (String tag : p.getTags()) {
+                if (photo.getTags().contains(tag)) {
+                    related.add(p);
+                    break;
+                }
+            }
+        }
+        return related;
+    }
+
+    public ObservableList<Photo> getPhotosByTag(String searchString) {
+        ObservableList<Photo> searched = FXCollections.observableArrayList();
+        for (Photo p : photos) {
+            if (p.getTags().contains(searchString)) {
+                searched.add(p);
+            }
+        }
+        return searched;
+    }
+
     public void deletePhoto() {
         // Remove currentPhoto from our list of photos
         photos.remove(currentPhoto);
@@ -164,10 +190,23 @@ public class PhotoManager {
 
         // Delete all photos in currentPhoto's directory, then delete that directory
         String[] filesInFolder = directory.list();
-        for(String s: filesInFolder){
-            File currentFile = new File(directory.getPath(),s);
+        for (String s: filesInFolder) {
+            File currentFile = new File(directory.getPath(), s);
             currentFile.delete();
+        }
         directory.delete();
-}
+    }
+
+    public void deletePhotos(Photo[] photosToDelete) {
+        for (Photo photo : photosToDelete) {
+            photos.remove(photo);
+            File directory = photo.getDirectory();
+            String[] filesInFolder = directory.list();
+            for (String s: filesInFolder) {
+                File currentFile = new File(directory.getPath(), s);
+                currentFile.delete();
+            }
+            directory.delete();
+        }
     }
 }

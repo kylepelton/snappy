@@ -3,8 +3,9 @@ package fxapp;
 import java.util.Properties;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import javafx.application.Application;
@@ -14,6 +15,7 @@ import javafx.stage.Stage;
 
 import controller.MainScreenController;
 import controller.InitConfigScreenController;
+import fxapp.Logger;
 
 public class Main extends Application {
 
@@ -33,6 +35,7 @@ public class Main extends Application {
             String delim = System.getProperty("file.separator");
             File configFile = new File(System.getProperty("user.home") + delim
                 + ".snappy" + delim + "config" + delim + "config.properties");
+            //Show initial startup screen if first time using application
             if (!configFile.exists()) {
 
                 secondaryStage = new Stage();
@@ -46,6 +49,7 @@ public class Main extends Application {
                 initController.setStage(secondaryStage);
                 secondaryStage.showAndWait();
 
+                //Create file if valid directory location given
                 if (initController.getDirectory() != null) {
                     validSetup = true;
                     File newDir = new File(initController.getDirectory() + delim + "snappy_photos");
@@ -62,6 +66,7 @@ public class Main extends Application {
                     prop.store(configOutput, null);
                     configOutput.close();
                 }
+            //Load config file if it exists
             } else {
                 configInput = new FileInputStream(configFile);
                 prop.load(configInput);
@@ -69,6 +74,25 @@ public class Main extends Application {
                 validSetup = true;
             }
 
+            //Set up log
+            File logDir = new File(System.getProperty("user.home") + delim
+                + ".snappy" + delim + "logs");
+            if (!logDir.exists()) {
+                logDir.mkdirs();
+            } else if (!logDir.isDirectory()) {
+                logDir.delete();
+            }
+            File logFile = new File(System.getProperty("user.home") + delim
+                + ".snappy" + delim + "logs" + delim + "LOG.txt");
+            if (logFile.exists()) {
+                // Don't know how this is possible, but leave in for sanity check
+                logFile.delete();
+            }
+            logFile.createNewFile();
+            Logger.log("LOG FILE SUCCESSFULLY CREATED\n\n");
+
+
+            //If config file exists, start application
             if (validSetup) {
                 loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource("/fxml/mainscreen.fxml"));
@@ -84,6 +108,7 @@ public class Main extends Application {
                 controller.setProperties(prop);
             }
         } catch (Exception e) {
+            // We can't guarantee at this point that the log has been created
             e.printStackTrace();
         }
     }

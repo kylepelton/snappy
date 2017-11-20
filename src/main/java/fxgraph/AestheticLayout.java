@@ -27,8 +27,8 @@ public class AestheticLayout extends Layout {
     private Graph graph;
     private Random random;
 
-    private final static int HEIGHT = 596;
-    private final static int WIDTH = 880;
+    private final static int HEIGHT = 550;
+    private final static int WIDTH = 900;
     private final static int AREA = HEIGHT * WIDTH;
     private final static double GRAVITY = 10.0;
     private final static int NUM_ITERS = 10;
@@ -58,17 +58,19 @@ public class AestheticLayout extends Layout {
             // source image is placed near the center
             if (i == 0) {
                 node.relocate(WIDTH / 2, HEIGHT / 2);
-                //ind = coords.size() / 2;
             } else {
                 ind = random.nextInt(coords.size());
                 double x = (coords.get(ind) << 16) >> 16;
                 double y = (coords.get(ind) >> 16);
+                // noise to reduce chance of colinearity
+                x += 20 * random.nextDouble() - 10;
+                y += 20 * random.nextDouble() - 10;
                 coords.remove(ind);
                 node.relocate(x, y);
             }
         }
 
-        double k = Math.sqrt(((double)AREA) / (1.0 + nodes.size())) / 10;
+        double k = Math.sqrt(((double)AREA) / (1.0 + nodes.size())) / 2;
         double t = HEIGHT / 10;
 
         for (int i = 0; i < NUM_ITERS; i++) {
@@ -85,7 +87,7 @@ public class AestheticLayout extends Layout {
                         }
                         double distance = Math.sqrt(xDist * xDist + yDist * yDist) + 1e-9;
 
-                        double repulsiveForce = k * k / Math.pow(distance, 1.5);
+                        double repulsiveForce = k * k / distance;
                         node1.dx += xDist / distance * repulsiveForce;
                         node1.dy += yDist / distance * repulsiveForce;
 

@@ -62,6 +62,7 @@ public class AestheticLayout extends Layout {
                 ind = random.nextInt(coords.size());
                 double x = (coords.get(ind) << 16) >> 16;
                 double y = (coords.get(ind) >> 16);
+                System.out.println(x + "," + y);
                 // noise to reduce chance of colinearity
                 x += 20 * random.nextDouble() - 10;
                 y += 20 * random.nextDouble() - 10;
@@ -107,7 +108,7 @@ public class AestheticLayout extends Layout {
                 }
                 double distance = Math.sqrt(xDist * xDist + yDist * yDist) + 1e-9;
 
-                double attractiveForce =  Math.sqrt(distance) / k;
+                double attractiveForce =  Math.sqrt(distance) / (5 * k);
                 source.dx -= xDist / distance * attractiveForce;
                 source.dy -= yDist / distance * attractiveForce;
                 target.dx += xDist / distance * attractiveForce;

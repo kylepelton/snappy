@@ -4,7 +4,7 @@ This is the repository for Team 7102's Junior Design project, the **Photo Schema
 
 ## Release Notes
 ### Version
-&nbsp;&nbsp;&nbsp;&nbsp; Snappy 1.0
+* Snappy 1.0
 ### New Features
 * Added ability to view photos and their tag connections as a graph
 * Added functionality to search bar on main screen so that users can look up photos based on tag

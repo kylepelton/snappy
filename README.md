@@ -3,6 +3,16 @@
 This is the repository for Team 7102's Junior Design project, the **Photo Schema Application** (a.k.a. "Snappy"). Snappy is a photo organization application which streamlines the photo tagging process by incorporating voice control so that users can tag in a hands-free manner.
 
 ## Release Notes
+### Version
+&nbsp;&nbsp;&nbsp;&nbsp; Snappy 1.0
+### New Features
+* Added ability to view photos and their tag connections as a graph
+* Added functionality to search bar on main screen so that users can look up photos based on tag
+### Bug Fixes
+* Fixed issues with multiselect/deleting multiple photos
+### Known Bugs
+* #10: Application screen does not resize based on size of the user's screen
+* #113: If the snappy_photos directory is removed after it has been initially created, then the application breaks.
 
 ## Install Guide
 ### Prerequisites

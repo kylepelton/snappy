@@ -15,7 +15,7 @@ This is the repository for Team 7102's Junior Design project, the **Photo Schema
   * Added the "Tag Selected Photos" and "Tag Selected Photos With" options to the Start Tagging button
   * Added the ability to delete multiple photos at once using multi-select
 ### Bug Fixes
-* Fixed photos being able to have a blank tag
+* Photos can no longer have a blank tag
 ### Known Bugs and Defects
 * #10: Application screen does not resize based on size of the user's screen
 * #113: If the snappy_photos directory is removed after it has been initially created, then the application breaks.

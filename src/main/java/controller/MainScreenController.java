@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -15,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.TilePane;
@@ -28,8 +30,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.SingleSelectionModel;
 
+import fxapp.Logger;
 import fxapp.SpeechRecognizer;
 import model.Photo;
 import model.PhotoManager;
@@ -38,7 +42,6 @@ import com.fxgraph.graph.Graph;
 import com.fxgraph.graph.Model;
 import com.fxgraph.layout.base.Layout;
 import com.fxgraph.layout.aesthetic.AestheticLayout;
-import com.fxgraph.graph.CellType;
 
 /**
  * MainScreenController is the controller for the main screen of the application
@@ -62,6 +65,8 @@ public class MainScreenController extends Controller implements IMainScreenContr
     // The list of multiselected photos
     private ObservableList<Photo> selectedPhotos;
 
+    // The search field
+    @FXML private TextField searchField;
     // The grid of images in the main screen
     @FXML private TilePane images;
     // The "_ untagged photos" text
@@ -90,6 +95,9 @@ public class MainScreenController extends Controller implements IMainScreenContr
         PhotoManager.getInstance().getPhotos().addListener((ListChangeListener) (change) -> {
             updatePhotos();
         });
+        searchField.setOnAction(e -> {
+            updatePhotos();
+        });
         // Setup the thread on which speech recognition runs
         selectedPhotos = FXCollections.observableList(new ArrayList<Photo>());
         selectedPhotos.addListener((ListChangeListener) (change) -> {
@@ -105,7 +113,8 @@ public class MainScreenController extends Controller implements IMainScreenContr
                 try {
                     speechRecognizer = new SpeechRecognizer();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Logger.log(e);
+                    //e.printStackTrace();
                 }
             }
         };
@@ -141,7 +150,8 @@ public class MainScreenController extends Controller implements IMainScreenContr
 
             return controller;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log(e);
+            //e.printStackTrace();
             return null;
         }
     }
@@ -188,31 +198,48 @@ public class MainScreenController extends Controller implements IMainScreenContr
      */
     private void updatePhotos() {
         images.getChildren().clear();
+        ObservableList<Photo> photos;
+        String searchString = searchField.getText().trim().toLowerCase();
 
-        for (Photo photo : PhotoManager.getInstance().getPhotos()) {
-            ImageView view = new ImageView(photo.getMainScreenImg());
+        if (searchString.isEmpty()) {
+            photos = PhotoManager.getInstance().getPhotos();
+        } else {
+            photos = PhotoManager.getInstance().getPhotosByTag(searchString);
+        }
+
+        if (photos.isEmpty()) {
+            ImageView view = new ImageView(new Image("/icons/no_images_found.png"));
             view.setPreserveRatio(true);
             view.setFitHeight(210);
             view.setFitWidth(230);
-            if (!multiSelectToggledOn) {
-                view.setOnMouseClicked((e) -> {
-                    PhotoManager.getInstance().setCurrentPhoto(photo);
-                    openScreen("viewphotoscreen", photo.getName());
-                });
-            } else {
-                selectedPhotos.clear();
-                view.setOnMouseClicked((e) -> {
-                    if(!selectedPhotos.contains(photo)) {
-                        selectedPhotos.add(photo);
-                        view.setStyle("-fx-effect: innershadow(one-pass-box, #039ed3, 30, 1, 0, 0);");
-                    } else {
-                        selectedPhotos.remove(photo);
-                        view.setStyle("");
-                    }
-                });
-            }
             images.getChildren().add(view);
+        } else {
+            for (Photo photo : photos) {
+                ImageView view = new ImageView(photo.getMainScreenImg());
+                view.setPreserveRatio(true);
+                view.setFitHeight(210);
+                view.setFitWidth(230);
+                if (!multiSelectToggledOn) {
+                    view.setOnMouseClicked((e) -> {
+                        PhotoManager.getInstance().setCurrentPhoto(photo);
+                        openScreen("viewphotoscreen", photo.getName());
+                    });
+                } else {
+                    selectedPhotos.clear();
+                    view.setOnMouseClicked((e) -> {
+                        if(!selectedPhotos.contains(photo)) {
+                            selectedPhotos.add(photo);
+                            view.setStyle("-fx-effect: innershadow(one-pass-box, #039ed3, 30, 1, 0, 0);");
+                        } else {
+                            selectedPhotos.remove(photo);
+                            view.setStyle("");
+                        }
+                    });
+                }
+                images.getChildren().add(view);
+            }
         }
+
         // Setup number of untagged photos upon loading up application
         setUntaggedPhotosText();
     }
@@ -263,6 +290,36 @@ public class MainScreenController extends Controller implements IMainScreenContr
     }
 
     /*
+     * Tag all photos with tags
+     */
+    @FXML
+    private void onTagSelectedPhotosWithPress() {
+        if (selectedPhotos.size() == 0) {
+            noPhotosMessage("No photos are currently selected.");
+            return;
+        }
+        TextInputDialog tid = new TextInputDialog();
+        tid.setTitle("Tag All Selected Photos With");
+        tid.setHeaderText("Tag all selected photos with a set of tags.\nSeparate tags with commas (,).");
+        tid.getEditor().setPromptText("Separate tags with commas (,)...");
+        Optional<String> result = tid.showAndWait();
+        if (result.isPresent()) {
+            String[] tagsToAdd = result.get().split(",");
+            for (Photo p : selectedPhotos) {
+                List<String> tags = new ArrayList<String>(p.getTags());
+                for (String t : tagsToAdd) {
+                    String trimmedTag = t.trim().toLowerCase();
+                    if (!trimmedTag.isEmpty() && !tags.contains(trimmedTag)) {
+                        tags.add(trimmedTag);
+                    }
+                }
+                p.setTags(tags);
+                p.commitTagChanges();
+            }
+        }
+    }
+
+    /*
      * Generate error message if tagging screen wasn't opened for some reason
      */
     private void noPhotosMessage(String message) {
@@ -300,6 +357,23 @@ public class MainScreenController extends Controller implements IMainScreenContr
         if (PhotoManager.getInstance().hasPhotos()) {
             openScreen("loadingscreen", "Loading Photos");
         }
+    }
+
+    /*
+     * Search for photos by tag and display results
+     */
+    @FXML
+    private void onSearchPress(ActionEvent event) {
+        updatePhotos();
+    }
+
+    /*
+     * Clear the search bar and the current search results
+     */
+    @FXML
+    private void onClearSearchPress(ActionEvent event) {
+        searchField.clear();
+        updatePhotos();
     }
 
     /*

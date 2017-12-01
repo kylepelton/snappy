@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import fxapp.LoadPhotosTask;
 import javafx.application.Platform;
+import fxapp.Logger;
 
 public class PhotoManager {
 
@@ -54,7 +55,8 @@ public class PhotoManager {
                 Files.copy(file.toPath(), stream);
                 stream.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.log(e);
+                //e.printStackTrace();
             }
             PhotoManager.createMetadataFile(
                     newPhotoDir.toString() + File.separator + ".metadata",
@@ -88,7 +90,8 @@ public class PhotoManager {
             }
             bw.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.log(e);
+            //e.printStackTrace();
         }
     }
 
@@ -161,14 +164,23 @@ public class PhotoManager {
         ObservableList<Photo> related = FXCollections.observableArrayList();
         for (Photo p : photos) {
             for (String tag : p.getTags()) {
-                if (photo.getTags().contains(tag))
-                {
+                if (photo.getTags().contains(tag)) {
                     related.add(p);
                     break;
                 }
             }
         }
         return related;
+    }
+
+    public ObservableList<Photo> getPhotosByTag(String searchString) {
+        ObservableList<Photo> searched = FXCollections.observableArrayList();
+        for (Photo p : photos) {
+            if (p.getTags().contains(searchString)) {
+                searched.add(p);
+            }
+        }
+        return searched;
     }
 
     public void deletePhoto() {

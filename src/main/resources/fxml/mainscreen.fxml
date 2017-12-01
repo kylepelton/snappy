@@ -29,13 +29,21 @@
                <children>
                   <ToolBar prefHeight="40.0" prefWidth="200.0">
                      <items>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Photos" textAlignment="CENTER" wrappingWidth="564.91552734375">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Photos" textAlignment="CENTER" wrappingWidth="545">
                            <font>
                               <Font size="22.0" />
                            </font>
                         </Text>
-                        <TextField prefHeight="31.0" prefWidth="291.0" promptText="Enter tags to filter..." />
-                        <Button mnemonicParsing="false" text="Search" />
+                        <TextField fx:id="searchField" prefHeight="31.0" prefWidth="291.0" promptText="Enter tags to filter..." />
+                        <Button mnemonicParsing="false" onAction="#onSearchPress" text="Search" />
+                        <Button mnemonicParsing="false" onAction="#onClearSearchPress">
+                           <graphic>
+                              <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/cross.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                      </items>
                   </ToolBar>
                   <TabPane fx:id="tabPane" prefHeight="1550.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
@@ -116,6 +124,7 @@
                       <MenuItem mnemonicParsing="false" onAction="#onTagAllPhotosPress" style="-fx-font-size: 20; -fx-pref-width: 273; -fx-padding: 0 0 0 10;" text="All Photos" />
                       <MenuItem mnemonicParsing="false" onAction="#onTagUntaggedPhotosPress" style="-fx-font-size: 20; -fx-pref-width: 273; -fx-padding: 0 0 0 10;" text="Untagged Photos" />
                       <MenuItem mnemonicParsing="false" onAction="#onTagSelectedPhotosPress" style="-fx-font-size: 20; -fx-pref-width: 273; -fx-padding: 0 0 0 10;" text="Selected Photos" />
+                      <MenuItem mnemonicParsing="false" onAction="#onTagSelectedPhotosWithPress" style="-fx-font-size: 20; -fx-pref-width: 273; -fx-padding: 0 0 0 10;" text="Selected Photos With..." />
                     </items>
                      <graphic>
                         <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">

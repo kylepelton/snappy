@@ -54,6 +54,8 @@ public class MainScreenController extends Controller implements IMainScreenContr
     private Stage primaryStage;
     // Any popup window is set to this stage
     private Stage secondaryStage;
+    // Help window's Stage
+    private Stage helpStage;
     // The properties of the local copy of this application
     private Properties prop;
     // The instance of SpeechRecognizer for this application
@@ -349,6 +351,26 @@ public class MainScreenController extends Controller implements IMainScreenContr
     }
 
     /*
+     * Set the help stage for this controller
+     * This stage is for the help screen
+     */
+    public void setHelpStage(Stage helpStage) {
+        this.helpStage = helpStage;
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/fxml/helpscreen.fxml"));
+            this.helpStage.setScene(new Scene(loader.load()));
+            this.helpStage.setTitle("Help");
+
+            Controller controller = loader.getController();
+            controller.setMainScreen(this);
+            controller.setStage(this.helpStage);
+        } catch (Exception e) {
+            Logger.log(e);
+        }
+    }
+
+    /*
      * Set the saved properties for this application
      */
     public void setProperties(Properties prop) {
@@ -374,6 +396,14 @@ public class MainScreenController extends Controller implements IMainScreenContr
     private void onClearSearchPress(ActionEvent event) {
         searchField.clear();
         updatePhotos();
+    }
+
+    /*
+     * Open the help screen
+     */
+    @FXML
+    private void onHelpPress(ActionEvent event) {
+        helpStage.show();
     }
 
     /*

@@ -29,6 +29,7 @@ public class Main extends Application {
         InputStream configInput = null;
         FXMLLoader loader = null;
         Stage secondaryStage = null;
+        Stage helpStage = null;
         boolean validSetup = false;
 
         try {
@@ -103,8 +104,10 @@ public class Main extends Application {
 
                 MainScreenController controller = loader.getController();
                 secondaryStage = new Stage();
+                helpStage = new Stage();
                 controller.setPrimaryStage(primaryStage);
                 controller.setSecondaryStage(secondaryStage);
+                controller.setHelpStage(helpStage);
                 controller.setProperties(prop);
             }
         } catch (Exception e) {

@@ -8,11 +8,14 @@ This is the repository for Team 7102's Junior Design project, the **Photo Schema
 ### New Features
 * Added ability to view photos and their tag connections as a graph
 * Added functionality to search bar on main screen so that users can look up photos based on tag
+* Added logging to a textfile in the case of an exception
 ### Bug Fixes
 * Fixed issues with multiselect/deleting multiple photos
-### Known Bugs
+* Fixed photos being able to have a blank tag
+### Known Bugs and Defects
 * #10: Application screen does not resize based on size of the user's screen
 * #113: If the snappy_photos directory is removed after it has been initially created, then the application breaks.
+* CMUSphinx is notably unreliable as a voice recognition software. However, because it is implemented using Observable, it should be easy to replace if needed.
 
 ## Install Guide
 ### Prerequisites

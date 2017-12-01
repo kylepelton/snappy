@@ -18,8 +18,6 @@ This is the repository for Team 7102's Junior Design project, the **Photo Schema
 * Photos can no longer have a blank tag
 ### Known Bugs and Defects
 * #10: Application screen does not resize based on size of the user's screen
-* #113: If the snappy_photos directory is removed after it has been initially created, then the application breaks.
-* CMUSphinx is notably unreliable as a voice recognition software. However, because it is implemented using Observable, it should be easy to replace if needed.
 * The graph view sometimes may display images on top of other images.
 
 ## Install Guide

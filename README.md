@@ -7,12 +7,18 @@ This is the repository for Team 7102's Junior Design project, the **Photo Schema
 * Snappy 1.0
 ### New Features
 * Added ability to view photos and their tag connections as a graph
+  * Added tab view at top of screen
+  * Clicking "View Related Photos" on a photo opens a new tab with a graph of connected photos
 * Added functionality to search bar on main screen so that users can look up photos based on tag
+* Added logging to a text file in the case of an exception
+* Added multi-select functionality to the grid view
+  * Added the "Tag Selected Photos" and "Tag Selected Photos With" options to the Start Tagging button
+  * Added the ability to delete multiple photos at once using multi-select
 ### Bug Fixes
-* Fixed issues with multiselect/deleting multiple photos
-### Known Bugs
+* Photos can no longer have a blank tag
+### Known Bugs and Defects
 * #10: Application screen does not resize based on size of the user's screen
-* #113: If the snappy_photos directory is removed after it has been initially created, then the application breaks.
+* The graph view sometimes may display images on top of other images.
 
 ## Install Guide
 ### Prerequisites

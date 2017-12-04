@@ -14,6 +14,7 @@ This is the repository for Team 7102's Junior Design project, the **Photo Schema
 * Added multi-select functionality to the grid view
   * Added the "Tag Selected Photos" and "Tag Selected Photos With" options to the Start Tagging button
   * Added the ability to delete multiple photos at once using multi-select
+* Added help documentation to the grid view
 ### Bug Fixes
 * Photos can no longer have a blank tag
 ### Known Bugs and Defects

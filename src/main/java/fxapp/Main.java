@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,7 @@ public class Main extends Application {
         InputStream configInput = null;
         FXMLLoader loader = null;
         Stage secondaryStage = null;
+        Stage helpStage = null;
         boolean validSetup = false;
 
         try {
@@ -91,7 +93,17 @@ public class Main extends Application {
             logFile.createNewFile();
             Logger.log("LOG FILE SUCCESSFULLY CREATED\n\n");
 
-
+            File photosdir = new File(prop.getProperty("photosdir")); 
+            if (!photosdir.exists() || !photosdir.isDirectory()) {
+                System.err.println("Error: Photo Directory " + photosdir + " is missing.");
+                try {
+                    photosdir.mkdirs();
+                } catch (Exception e) {  // if directory creation fails
+                    e.printStackTrace();
+                    validSetup = false;
+                }
+            }
+            
             //If config file exists, start application
             if (validSetup) {
                 loader = new FXMLLoader();
@@ -103,8 +115,10 @@ public class Main extends Application {
 
                 MainScreenController controller = loader.getController();
                 secondaryStage = new Stage();
+                helpStage = new Stage();
                 controller.setPrimaryStage(primaryStage);
                 controller.setSecondaryStage(secondaryStage);
+                controller.setHelpStage(helpStage);
                 controller.setProperties(prop);
             }
         } catch (Exception e) {

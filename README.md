@@ -31,8 +31,8 @@ This is the repository for Team 7102's Junior Design project, the **Photo Schema
 ### Dependent Libraries
 &nbsp;&nbsp;&nbsp;&nbsp;N/A
 ### Download Instructions
-* If you only wish to use Snappy (that is, you don't plan on developing the application), you can download a built version of the application [here](https://github.com/kylepelton/snappy/releases). Click on the most recent version released, then click the `snappy-<version number>.jar` file to download. 
-* If you wish to develop Snappy, click [here](https://github.com/kylepelton/snappy/archive/master.zip) to download the latest zipped up version of the code.
+1. If you only wish to use Snappy (that is, you don't plan on developing the application), you can download a built version of the application [here](https://github.com/kylepelton/snappy/releases). Click on the most recent version released, then click the `snappy-<version number>.jar` file to download. 
+2. Otherwise, click [here](https://github.com/kylepelton/snappy/archive/master.zip) to download the latest zipped up version of the code.
 ### Build Instructions
 *NOTE*: Only users who intend to develop Snappy need to complete the following instructions. Any other users can proceed to the next section since the download zip already contains an executable jar file.
 1. If you haven't already, unzip the file you just downloaded to whichever directory you desire.
